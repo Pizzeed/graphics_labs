@@ -1,0 +1,159 @@
+#include <iostream>
+#include <chrono>
+
+#include <labs_engine/glad/khrplatform.h>
+#include <labs_engine/glad/glad.h>
+
+#include <GLFW/glfw3.h>
+
+#include <labs_engine/utils/color.h>
+#include <labs_engine/application/application.h>
+
+namespace leng
+{
+  auto Application::framebuffer_size_callback(
+    GLFWwindow* window,
+    int width,
+    int height
+  ) -> void
+  {
+    Application* app = static_cast<Application*>(
+      glfwGetWindowUserPointer(window)
+    );
+    app->m_window_width = width;
+    app->m_window_height = height;
+    glViewport(0, 0, width, height);
+  }
+
+  auto Application::get() -> Application*
+  {
+    static Application inst;
+    return &inst;
+  }
+
+  Application::Application() { init_graphics(); }
+
+  Application::~Application() { cleanup(); }
+
+  auto Application::init_graphics() -> void
+  {
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    m_window = glfwCreateWindow(
+      m_window_width,
+      m_window_height,
+      m_window_title.c_str(),
+      NULL,
+      NULL
+    );
+    if(not m_window) {
+      std::cout << "Failed to create GLFW window" << std::endl;
+      glfwTerminate();
+      return;
+    }
+    glfwMakeContextCurrent(m_window);
+    if(! gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+      std::cout << "Failed to initialize GLAD" << std::endl;
+      glfwTerminate();
+      return;
+    }
+    glfwSetWindowUserPointer(m_window, this);
+    glfwSetFramebufferSizeCallback(
+      m_window,
+      &Application::framebuffer_size_callback
+    );
+
+    // u32 vertexShader;
+    // vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    // char const*
+    //   v_shader_src =
+    //   b::embed<"src/shaders/default/default.vert.glsl">().data();
+    // char const*
+    //   f_shader_src =
+    //   b::embed<"src/shaders/default/default.frag.glsl">().data();
+
+    // glShaderSource(vertexShader, 1, &v_shader_src, nullptr);
+    // glCompileShader(vertexShader);
+
+    // int success;
+    // char infoLog[512];
+    // glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+
+    // if(not success) {
+    //   glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
+    //   std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+    //             << infoLog << std::endl;
+    //   glfwTerminate();
+    // }
+
+    // u32 fragmentShader;
+    // fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    // glShaderSource(fragmentShader, 1, &f_shader_src, nullptr);
+    // glCompileShader(fragmentShader);
+
+    // glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+
+    // if(not success) {
+    //   glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
+    //   std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
+    //             << infoLog << std::endl;
+    //   glfwTerminate();
+    // }
+
+    // shaderProgram = glCreateProgram();
+
+    // glAttachShader(shaderProgram, vertexShader);
+    // glAttachShader(shaderProgram, fragmentShader);
+    // glLinkProgram(shaderProgram);
+
+    // glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+
+    // if(! success) {
+    //   glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+    //   std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n"
+    //             << infoLog << std::endl;
+    //   glfwTerminate();
+    // }
+    // glDeleteShader(vertexShader);
+    // glDeleteShader(fragmentShader);
+  }
+
+  auto Application::run_graphics_loop() -> void
+  {
+    using namespace std::chrono;
+
+    auto last_time = steady_clock::now();
+
+    while(! glfwWindowShouldClose(m_window)) {
+      auto current_time = steady_clock::now();
+      auto elapsed = duration_cast<seconds>(current_time - last_time);
+
+      glfwPollEvents();
+      glfwSwapBuffers(m_window);
+    }
+  }
+
+  auto Application::cleanup() -> void { glfwTerminate(); }
+
+  auto Application::window() -> GLFWwindow* const { return m_window; }
+
+  auto Application::with_width(u32 const width) -> Application*
+  {
+    m_window_width = width;
+    return this;
+  }
+
+  auto Application::with_height(u32 const height) -> Application*
+  {
+    m_window_height = height;
+    return this;
+  }
+
+  auto Application::with_title(std::string const& title) -> Application*
+  {
+    m_window_title = title;
+    return this;
+  }
+}  // namespace leng
