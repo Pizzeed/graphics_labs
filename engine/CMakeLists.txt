@@ -26,8 +26,8 @@ find_package(glm REQUIRED)
 find_package(imgui REQUIRED)
 find_package(OpenGL REQUIRED)
 
-add_executable(${PROJECT_NAME})
-add_executable(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+add_library(${PROJECT_NAME})
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 include_directories( ${OPENGL_INCLUDE_DIRS})
 
@@ -43,11 +43,10 @@ PRIVATE
 target_sources(${PROJECT_NAME}
 PUBLIC
 PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/main.cc
-
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/utils/color.cc
 
-  
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/object/object.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/object/render_object.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/application/application.cc
   
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/glad/glad.cc
@@ -56,13 +55,20 @@ PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/bindings/imgui_impl_opengl3.cpp
 
 )
+
 target_link_libraries(${PROJECT_NAME}
 PRIVATE
+PUBLIC
   ${OPENGL_LIBRARIES}
   glfw
   glm::glm
   imgui::imgui
 )
+
+if(STANDALONE)
+  message(STATUS "[${PROJECT_NAME}] building test executable for developers")
+  add_subdirectory(bin)
+endif()
 
 message(
   STATUS
@@ -98,10 +104,6 @@ install(
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/labs_engine>
     $<INSTALL_INTERFACE:include/labs_engine> ;
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-export(
-  TARGETS ${PROJECT_NAME}
-  NAMESPACE ${PROJECT_NAMESPACE}
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/${CONFIG_TARGETS_FILE}")
 install(
   EXPORT ${PROJECT_NAME}
   DESTINATION ${INSTALL_EXPORT_DESTINATION_DIR}
@@ -117,8 +119,4 @@ install(FILES ${PROJECT_CONFIG_FILE} ${CONFIG_VERSION_FILE}
 
 message(STATUS "[${PROJECT_NAME}] configuring ${PROJECT_NAME} done!")
 
-if(STANDALONE)
-  message(STATUS "[${PROJECT_NAME}] building test executable for developers")
-  add_subdirectory(bin)
-endif()
 unset(STANDALONE CACHE)

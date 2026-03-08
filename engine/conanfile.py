@@ -10,7 +10,6 @@ class LabsEngineRecipe(ConanFile):
     version = "0.0.1"
 
     settings = "os", "compiler", "build_type", "arch"
-    generators = "CMakeToolchain"
 
     exports_sources = "*"
 
@@ -28,7 +27,6 @@ class LabsEngineRecipe(ConanFile):
         return '20'
 
     def requirements(self):
-        self.requires("battery-embed/1.2.19")
         self.requires("glfw/3.4")
         self.requires("glm/1.0.1")
         self.requires("imgui/1.91.8")
@@ -42,6 +40,7 @@ class LabsEngineRecipe(ConanFile):
         tc = CMakeToolchain(self)
         tc.cache_variables["BUILD_SHARED_LIBS"] = self.options.shared
         tc.cache_variables["STANDALONE"] = self.options.standalone
+        tc.generate()
         copy(self, "*glfw*", os.path.join(self.dependencies["imgui"].package_folder,
             "res", "bindings"), os.path.join(self.source_folder, "bindings"))
         copy(self, "*opengl3*", os.path.join(self.dependencies["imgui"].package_folder,

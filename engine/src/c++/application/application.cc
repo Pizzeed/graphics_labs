@@ -156,4 +156,23 @@ namespace leng
     m_window_title = title;
     return this;
   }
+
+  auto Application::add_object(std::shared_ptr<Object> const& object) -> void
+  {
+    if(not object)
+      return;
+    m_objects.push_back(object);
+  }
+
+  auto Application::remove_object(Object* object) -> void
+  {
+    if(not object)
+      return;
+    for(auto it = m_objects.begin(); it != m_objects.end(); ++it) {
+      if(it->get() == object) {
+        m_objects.erase(it);
+        return;
+      }
+    }
+  }
 }  // namespace leng

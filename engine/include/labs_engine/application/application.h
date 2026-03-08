@@ -1,10 +1,13 @@
 #pragma once
 
+#include <memory>
 #include <string>
+#include <vector>
 
 #include <GLFW/glfw3.h>
 
 #include <labs_engine/utils/types.h>
+#include <labs_engine/object/render_object.h>
 
 namespace leng
 {
@@ -27,6 +30,8 @@ namespace leng
    private:
     Application();
     auto init_graphics() -> void;
+    auto add_object(std::shared_ptr<Object> const& object) -> void;
+    auto remove_object(Object* object) -> void;
     auto cleanup() -> void;
     static auto framebuffer_size_callback(
       GLFWwindow* window,
@@ -34,11 +39,12 @@ namespace leng
       int height
     ) -> void;
 
-    GLFWwindow* m_window;
+    friend class Object;
+    std::vector<std::shared_ptr<Object>> m_objects = {};
 
+    GLFWwindow* m_window;
     u32 m_window_width = 800;
     u32 m_window_height = 600;
     std::string m_window_title = "New Application";
-    u32 shaderProgram;
   };
 }  // namespace leng
