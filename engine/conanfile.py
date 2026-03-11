@@ -68,7 +68,7 @@ class LabsEngineRecipe(ConanFile):
         self.cpp_info.set_property("cmake_file_name", "labs_engine")
         self.cpp_info.set_property("cmake_target_name", "labs_engine::labs_engine")
         self.cpp_info.libs = ["labs_engine"]
-        self.cpp_info.requires = ["glfw::glfw", "glm::glm, battery-embed::battery-embed", "imgui::imgui"]
+        self.cpp_info.requires = ["glfw::glfw", "glm::glm", "imgui::imgui"]
 
 
     def imports(self):

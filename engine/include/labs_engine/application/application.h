@@ -7,7 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #include <labs_engine/utils/types.h>
-#include <labs_engine/object/render_object.h>
+#include <labs_engine/object/object.h>
 
 namespace leng
 {
@@ -24,6 +24,7 @@ namespace leng
     auto with_width(u32 const width) -> Application*;
     auto with_height(u32 const height) -> Application*;
     auto with_title(std::string const& title) -> Application*;
+    auto init() -> void;
     auto window() -> GLFWwindow* const;
     auto run_graphics_loop() -> void;
 

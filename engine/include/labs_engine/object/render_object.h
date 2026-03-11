@@ -25,13 +25,12 @@ namespace leng
    protected:
     virtual auto render() -> void = 0;
 
-   private:
-    Transform m_transform;
-    u32 m_shader_program;
-    u32 m_vao;
-    u32 m_vbo;
-    u32 m_ebo;
+    Transform m_transform = {};
+    u32 m_shader_program = -1;
+    u32 m_vao = -1;
+    u32 m_vbo = -1;
+    u32 m_ebo = -1;
 
-    friend class leng::Application;
+    friend void Application::run_graphics_loop();
   };
 }  // namespace leng

@@ -1,13 +1,14 @@
+#include <chrono>
 #include <iostream>
 #include <chrono>
 
-#include <labs_engine/glad/khrplatform.h>
 #include <labs_engine/glad/glad.h>
 
 #include <GLFW/glfw3.h>
 
 #include <labs_engine/utils/color.h>
 #include <labs_engine/application/application.h>
+#include <labs_engine/object/render_object.h>
 
 namespace leng
 {
@@ -31,7 +32,7 @@ namespace leng
     return &inst;
   }
 
-  Application::Application() { init_graphics(); }
+  Application::Application() {}
 
   Application::~Application() { cleanup(); }
 
@@ -129,7 +130,14 @@ namespace leng
     while(! glfwWindowShouldClose(m_window)) {
       auto current_time = steady_clock::now();
       auto elapsed = duration_cast<seconds>(current_time - last_time);
-
+      last_time = current_time;
+      glClearColor(32.f / 255.f, 15.f / 255.f, 74.f / 255.f, 1.0f);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      for(auto const& object : m_objects) {
+        object->tick(elapsed.count());
+        if(auto render = dynamic_cast<RenderObject*>(object.get()))
+          render->render();
+      }
       glfwPollEvents();
       glfwSwapBuffers(m_window);
     }
@@ -156,6 +164,8 @@ namespace leng
     m_window_title = title;
     return this;
   }
+
+  auto Application::init() -> void { init_graphics(); }
 
   auto Application::add_object(std::shared_ptr<Object> const& object) -> void
   {
