@@ -26,10 +26,9 @@ namespace leng
     virtual auto render() -> void = 0;
 
     Transform m_transform = {};
-    u32 m_shader_program = -1;
-    u32 m_vao = -1;
-    u32 m_vbo = -1;
-    u32 m_ebo = -1;
+    u32 m_vao = 0;
+    u32 m_vbo = 0;
+    u32 m_ebo = 0;
 
     friend void Application::run_graphics_loop();
   };

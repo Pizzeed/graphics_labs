@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/ext/vector_float3.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
@@ -18,18 +19,15 @@ namespace leng
    protected:
     virtual auto render() -> void override;
 
+    virtual auto setup_mesh() -> void override;
+
     friend void Application::run_graphics_loop();
 
    private:
-    struct Vertex
-    {
-      glm::vec3 position;
-      glm::vec3 normal;
-      glm::vec2 texcoord;
-    };
+    auto load_file(std::string const& path) -> void;
 
-    auto load_file(std::string const& path) -> std::vector<Vertex>;
-
-    std::vector<Vertex> m_vertices = {}
+    std::vector<glm::vec3> m_geometry = {};
+    std::vector<glm::vec3> m_normal = {};
+    std::vector<glm::vec2> m_texture = {};
   };
 }  // namespace leng

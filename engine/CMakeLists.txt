@@ -45,9 +45,11 @@ PUBLIC
 PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/utils/color.cc
 
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/application/application.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/object/object.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/object/render_object.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/application/application.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/mesh/objmesh.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/material/material.cc
   
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/glad/glad.cc
   

@@ -65,60 +65,6 @@ namespace leng
       m_window,
       &Application::framebuffer_size_callback
     );
-
-    // u32 vertexShader;
-    // vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    // char const*
-    //   v_shader_src =
-    //   b::embed<"src/shaders/default/default.vert.glsl">().data();
-    // char const*
-    //   f_shader_src =
-    //   b::embed<"src/shaders/default/default.frag.glsl">().data();
-
-    // glShaderSource(vertexShader, 1, &v_shader_src, nullptr);
-    // glCompileShader(vertexShader);
-
-    // int success;
-    // char infoLog[512];
-    // glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-
-    // if(not success) {
-    //   glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-    //   std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
-    //             << infoLog << std::endl;
-    //   glfwTerminate();
-    // }
-
-    // u32 fragmentShader;
-    // fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    // glShaderSource(fragmentShader, 1, &f_shader_src, nullptr);
-    // glCompileShader(fragmentShader);
-
-    // glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-
-    // if(not success) {
-    //   glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-    //   std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
-    //             << infoLog << std::endl;
-    //   glfwTerminate();
-    // }
-
-    // shaderProgram = glCreateProgram();
-
-    // glAttachShader(shaderProgram, vertexShader);
-    // glAttachShader(shaderProgram, fragmentShader);
-    // glLinkProgram(shaderProgram);
-
-    // glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-
-    // if(! success) {
-    //   glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-    //   std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n"
-    //             << infoLog << std::endl;
-    //   glfwTerminate();
-    // }
-    // glDeleteShader(vertexShader);
-    // glDeleteShader(fragmentShader);
   }
 
   auto Application::run_graphics_loop() -> void
