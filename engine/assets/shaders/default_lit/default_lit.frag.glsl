@@ -1,4 +1,3 @@
-
 #version 420 core
 in vec3 FragPos;
 in vec3 Normal;

@@ -10,10 +10,12 @@ int main()
                ->with_title("Test");
   app->init();
   auto material = leng::Material::from_files(
-    "./assets/shaders/default/default.vert.glsl",
-    "./assets/shaders/default/default.frag.glsl"
+    "./assets/shaders/default_lit/default_lit.vert.glsl",
+    "./assets/shaders/default_lit/default_lit.frag.glsl"
   );
+  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   auto teapot = leng::OBJMesh {"./assets/teapot.obj", material};
+  teapot.set_position({0.f, -2.f, -2.f});
   app->run_graphics_loop();
   return 0;
 }

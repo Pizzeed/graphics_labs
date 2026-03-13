@@ -59,6 +59,8 @@ namespace leng
       }
     };
 
+    int m_vertex_count = 0;
+    int m_index_count = 0;
     std::vector<Vertex> m_vertices = {};
     std::vector<u32> m_indices = {};
     std::unordered_map<VertexKey, u32, VertexKeyHash> m_vertex_map = {};

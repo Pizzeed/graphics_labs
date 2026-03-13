@@ -27,8 +27,6 @@ namespace leng
     load_file(filename);
 
     setup_mesh();
-
-    is_material_valid = m_material.is_valid();
   }
 
   OBJMesh::~OBJMesh() {}
@@ -85,20 +83,38 @@ namespace leng
     m_model_loc = glGetUniformLocation(m_material.program(), "model");
     m_view_loc = glGetUniformLocation(m_material.program(), "view");
     m_proj_loc = glGetUniformLocation(m_material.program(), "projection");
+
+    if(not m_material.is_valid())
+      std::cout << "Material not valid" << std::endl;
+
+    m_vertex_count = m_vertices.size();
+    m_index_count = m_indices.size();
+    // m_vertices = {};
+    // m_indices = {};
   }
 
   auto OBJMesh::tick(int const delta) -> void {}
 
   auto OBJMesh::render() -> void
   {
-    if(not is_material_valid) {
-      std::cout << "Material not valid" << std::endl;
+    if(not m_material.is_valid()) {
       return;
     }
     glBindVertexArray(m_vao);
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -2.f, 0.0f));
-    model = glm::scale(model, glm::vec3(.5f));
+
+    model = glm::scale(model, m_transform.scale);
+
+    glm::quat qx = glm::angleAxis(m_transform.rotation.x, glm::vec3(1, 0, 0));
+    glm::quat qy = glm::angleAxis(m_transform.rotation.y, glm::vec3(0, 1, 0));
+    glm::quat qz = glm::angleAxis(m_transform.rotation.z, glm::vec3(0, 0, 1));
+
+    glm::quat q = qz * qy * qx;
+    glm::mat4 rotation_matrix = glm::mat4(q);
+
+    model = model * rotation_matrix;
+
+    model = glm::translate(model, m_transform.position);
 
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);  // Camera 3 units back
                                                         // on z-axis
@@ -120,7 +136,7 @@ namespace leng
     glUniformMatrix4fv(m_view_loc, 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(m_proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
 
-    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, m_index_count, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
   }
 

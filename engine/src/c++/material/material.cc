@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -33,6 +34,14 @@ namespace leng
     std::string const& fragment_shader_filename
   ) -> Material
   {
+    if(not std::filesystem::exists(vertex_shader_filename)) {
+      std::cout << "File not found: " << vertex_shader_filename << std::endl;
+      return Material {"", ""};
+    }
+    if(not std::filesystem::exists(fragment_shader_filename)) {
+      std::cout << "File not found: " << fragment_shader_filename << std::endl;
+      return Material {"", ""};
+    }
     std::stringstream v_ss, f_ss;
     std::ifstream file = {};
     std::cout << "Reading vertex shader from " << vertex_shader_filename
