@@ -24,6 +24,8 @@ namespace leng
     app->m_window_width = width;
     app->m_window_height = height;
     glViewport(0, 0, width, height);
+    app->m_current_camera.set_width(width);
+    app->m_current_camera.set_height(height);
   }
 
   auto Application::get() -> Application*
@@ -32,7 +34,11 @@ namespace leng
     return &inst;
   }
 
-  Application::Application() {}
+  Application::Application()
+    : m_current_camera(
+        Camera::perspective({}, {}, 90.f, 800.f, 600.f, 0.01f, 1000.f)
+      )
+  {}
 
   Application::~Application() { cleanup(); }
 
@@ -96,7 +102,7 @@ namespace leng
       for(auto const& object : m_objects) {
         object->tick(elapsed.count());
         if(auto render = dynamic_cast<RenderObject*>(object.get()))
-          render->render();
+          render->render(m_current_camera);
       }
       glfwPollEvents();
       glfwSwapBuffers(m_window);
@@ -149,5 +155,12 @@ namespace leng
         return;
       }
     }
+  }
+
+  auto Application::current_camera() -> Camera& { return m_current_camera; }
+
+  auto Application::set_current_camera(Camera const& camera) -> void
+  {
+    m_current_camera = camera;
   }
 }  // namespace leng

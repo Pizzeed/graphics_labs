@@ -22,7 +22,7 @@ namespace leng
     virtual auto tick(int const delta) -> void override;
 
    protected:
-    virtual auto render() -> void override;
+    virtual auto render(Camera const& camera) -> void override;
 
     virtual auto setup_mesh() -> void;
 

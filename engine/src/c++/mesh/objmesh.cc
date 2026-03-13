@@ -89,13 +89,13 @@ namespace leng
 
     m_vertex_count = m_vertices.size();
     m_index_count = m_indices.size();
-    // m_vertices = {};
-    // m_indices = {};
+    m_vertices = {};
+    m_indices = {};
   }
 
   auto OBJMesh::tick(int const delta) -> void {}
 
-  auto OBJMesh::render() -> void
+  auto OBJMesh::render(Camera const& camera) -> void
   {
     if(not m_material.is_valid()) {
       return;
@@ -116,25 +116,26 @@ namespace leng
 
     model = glm::translate(model, m_transform.position);
 
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);  // Camera 3 units back
-                                                        // on z-axis
-    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);  // Looking at origin
-    glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);      // Up direction
+    // auto view = camera.view_matrix();
 
-    glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, cameraUp);
+    auto proj = camera.projection_matrix();
+    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    float fov = 90.0f;               // Field of view in degrees
-    float aspect = 800.0f / 600.0f;  // Window width / height
-    float near = 0.01f;              // Near clipping plane
-    float far = 100.0f;              // Far clipping plane
+    glm::mat4 view = glm::lookAt(camera.position(), camera.target(), cameraUp);
 
-    glm::mat4
-      projection = glm::perspective(glm::radians(fov), aspect, near, far);
+    // float fov = 90.0f;
+    // float aspect = camera.aspect();
+    // float near = 0.01f;
+    // float far = 100.0f;
+
+    // glm::mat4 proj = glm::perspective(glm::radians(fov), aspect, near, far);
 
     glUseProgram(m_material.program());
     glUniformMatrix4fv(m_model_loc, 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(m_view_loc, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(m_proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(m_proj_loc, 1, GL_FALSE, glm::value_ptr(proj));
 
     glDrawElements(GL_TRIANGLES, m_index_count, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

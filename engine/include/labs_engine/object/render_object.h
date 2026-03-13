@@ -23,7 +23,7 @@ namespace leng
     auto transform() -> Transform&;
 
    protected:
-    virtual auto render() -> void = 0;
+    virtual auto render(Camera const& camera) -> void = 0;
 
     Transform m_transform = {};
     u32 m_vao = 0;

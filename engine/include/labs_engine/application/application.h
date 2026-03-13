@@ -8,6 +8,7 @@
 
 #include <labs_engine/utils/types.h>
 #include <labs_engine/object/object.h>
+#include <labs_engine/camera/camera.h>
 
 namespace leng
 {
@@ -25,8 +26,12 @@ namespace leng
     auto with_height(u32 const height) -> Application*;
     auto with_title(std::string const& title) -> Application*;
     auto init() -> void;
-    auto window() -> GLFWwindow* const;
     auto run_graphics_loop() -> void;
+
+    auto window() -> GLFWwindow* const;
+    auto current_camera() -> Camera&;
+
+    auto set_current_camera(Camera const& camera) -> void;
 
    private:
     Application();
@@ -41,11 +46,14 @@ namespace leng
     ) -> void;
 
     friend class Object;
+
     std::vector<std::shared_ptr<Object>> m_objects = {};
 
     GLFWwindow* m_window;
     u32 m_window_width = 800;
     u32 m_window_height = 600;
     std::string m_window_title = "New Application";
+
+    Camera m_current_camera;
   };
 }  // namespace leng
