@@ -45,6 +45,7 @@ class LabsEngineRecipe(ConanFile):
             "res", "bindings"), os.path.join(self.source_folder, "bindings"))
         copy(self, "*opengl3*", os.path.join(self.dependencies["imgui"].package_folder,
             "res", "bindings"), os.path.join(self.source_folder, "bindings"))
+        copy(self, "*", os.path.join(self.source_folder, "assets"), os.path.join(self.build_folder, "assets"))
 
 
     def validate(self):

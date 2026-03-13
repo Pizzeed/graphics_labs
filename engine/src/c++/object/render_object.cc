@@ -1,3 +1,7 @@
+#include <labs_engine/glad/glad.h>
+#include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
+
 #include <labs_engine/utils/types.h>
 #include <labs_engine/object/render_object.h>
 
@@ -5,9 +9,18 @@ namespace leng
 {
   RenderObject::RenderObject()
     : Object()
-  {}
+  {
+    glGenBuffers(1, &m_vbo);
+    glGenVertexArrays(1, &m_vao);
+    glGenBuffers(1, &m_ebo);
+  }
 
-  RenderObject::~RenderObject() {}
+  RenderObject::~RenderObject()
+  {
+    glDeleteBuffers(1, &m_vbo);
+    glDeleteVertexArrays(1, &m_vao);
+    glDeleteBuffers(1, &m_ebo);
+  }
 
   auto RenderObject::set_position(glm::vec3 const& position) -> void
   {

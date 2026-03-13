@@ -19,12 +19,14 @@ namespace leng
       std::string const& fragment_shader_filename
     ) -> Material;
 
-    auto is_valid() -> bool;
+    auto is_valid() const -> bool;
 
-    auto last_error() -> std::string;
-    auto vertex_error() -> std::string;
-    auto fragment_error() -> std::string;
-    auto program_error() -> std::string;
+    auto program() const -> u32;
+
+    auto last_error() const -> std::string;
+    auto vertex_error() const -> std::string;
+    auto fragment_error() const -> std::string;
+    auto program_error() const -> std::string;
 
    protected:
     auto compile_vertex() -> void;

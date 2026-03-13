@@ -1,3 +1,7 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include <labs_engine/glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -9,33 +13,67 @@ namespace leng
     std::string const& vertex_shader,
     std::string const& fragment_shader
   )
-  {}
+    : m_v_src(vertex_shader)
+    , m_f_src(fragment_shader)
+  {
+    compile_vertex();
+    compile_fragment();
+    compile_program();
+  }
 
-  Material::~Material() {}
+  Material::~Material()
+  {
+    glDeleteProgram(m_shader_program);
+    glDeleteShader(m_vertex_shader);
+    glDeleteShader(m_fragment_shader);
+  }
 
-  static auto from_files(
+  auto Material::from_files(
     std::string const& vertex_shader_filename,
     std::string const& fragment_shader_filename
   ) -> Material
-  {}
+  {
+    std::stringstream v_ss, f_ss;
+    std::ifstream file = {};
+    std::cout << "Reading vertex shader from " << vertex_shader_filename
+              << std::endl;
+    file.open(vertex_shader_filename);
+    v_ss << file.rdbuf();
+    file.close();
+    file.open(fragment_shader_filename);
+    std::ifstream file2(fragment_shader_filename);
+    std::cout << "Reading fragment shader from " << fragment_shader_filename
+              << std::endl;
+    f_ss << file2.rdbuf();
+    file.close();
+    return Material {v_ss.str(), f_ss.str()};
+  }
 
-  auto Material::is_valid() -> bool
+  auto Material::is_valid() const -> bool
   {
     return m_v_compiled && m_f_compiled && m_program_compiled;
   }
 
-  auto Material::last_error() -> std::string
+  auto Material::program() const -> u32 { return m_shader_program; }
+
+  auto Material::last_error() const -> std::string
   {
     if(m_last_error != nullptr)
       return "";
     return *m_last_error;
   }
 
-  auto Material::vertex_error() -> std::string { return m_vertex_error; }
+  auto Material::vertex_error() const -> std::string { return m_vertex_error; }
 
-  auto Material::fragment_error() -> std::string { return m_fragment_error; }
+  auto Material::fragment_error() const -> std::string
+  {
+    return m_fragment_error;
+  }
 
-  auto Material::program_error() -> std::string { return m_program_error; }
+  auto Material::program_error() const -> std::string
+  {
+    return m_program_error;
+  }
 
   auto Material::compile_vertex() -> void
   {
@@ -60,6 +98,7 @@ namespace leng
     m_vertex_error = infoLog;
     m_last_error = &m_vertex_error;
     m_v_compiled = false;
+    std::cout << "Vertex shader compilation error: " << infoLog << std::endl;
     return;
   }
 
@@ -86,6 +125,7 @@ namespace leng
     m_fragment_error = infoLog;
     m_last_error = &m_fragment_error;
     m_f_compiled = false;
+    std::cout << "Fragment shader compilation error: " << infoLog << std::endl;
     return;
   }
 
@@ -107,10 +147,6 @@ namespace leng
 
     if(success) {
       m_program_compiled = true;
-      glDeleteShader(m_vertex_shader);
-      glDeleteShader(m_fragment_shader);
-      m_vertex_shader = 0;
-      m_fragment_shader = 0;
       return;
     }
 
@@ -119,6 +155,7 @@ namespace leng
     m_program_compiled = false;
     m_program_error = infoLog;
     m_last_error = &m_program_error;
+    std::cout << "Program linkage error: " << infoLog << std::endl;
     return;
   }
 }  // namespace leng

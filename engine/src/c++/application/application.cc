@@ -65,6 +65,20 @@ namespace leng
       m_window,
       &Application::framebuffer_size_callback
     );
+    glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_DEBUG_OUTPUT);
+    // glDebugMessageCallback(
+    //   [](
+    //     GLenum source,
+    //     GLenum type,
+    //     GLuint id,
+    //     GLenum severity,
+    //     GLsizei length,
+    //     GLchar const* message,
+    //     void const* userParam
+    //   ) { std::cout << "GL DEBUG: " << message << std::endl; },
+    //   nullptr
+    // );
   }
 
   auto Application::run_graphics_loop() -> void
@@ -73,7 +87,7 @@ namespace leng
 
     auto last_time = steady_clock::now();
 
-    while(! glfwWindowShouldClose(m_window)) {
+    while(not glfwWindowShouldClose(m_window)) {
       auto current_time = steady_clock::now();
       auto elapsed = duration_cast<seconds>(current_time - last_time);
       last_time = current_time;
@@ -89,7 +103,12 @@ namespace leng
     }
   }
 
-  auto Application::cleanup() -> void { glfwTerminate(); }
+  auto Application::cleanup() -> void
+  {
+    m_objects = {};
+    glfwDestroyWindow(m_window);
+    glfwTerminate();
+  }
 
   auto Application::window() -> GLFWwindow* const { return m_window; }
 

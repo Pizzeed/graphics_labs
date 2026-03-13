@@ -69,7 +69,7 @@ PUBLIC
 
 if(STANDALONE)
   message(STATUS "[${PROJECT_NAME}] building test executable for developers")
-  add_subdirectory(bin)
+  add_subdirectory(standalone)
 endif()
 
 message(
