@@ -13,8 +13,6 @@ namespace leng
     virtual ~Mesh();
 
    protected:
-    virtual auto tick(int const delta) -> void override {}
-
     virtual auto render(Camera const& camera) -> void override;
 
     Material m_material;

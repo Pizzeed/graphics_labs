@@ -46,20 +46,8 @@ namespace leng
 
     model = glm::translate(model, m_transform.position);
 
-    // auto view = camera.view_matrix();
-    // auto proj = camera.projection_matrix();
-
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-    float fov = 90.0f;
-    float aspect = camera.aspect();
-    float near = 0.01f;
-    float far = 100.0f;
-
-    glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, cameraUp);
-    glm::mat4 proj = glm::perspective(glm::radians(fov), aspect, near, far);
+    auto view = camera.view_matrix();
+    auto proj = camera.projection_matrix();
 
     glBindVertexArray(m_vao);
     glUseProgram(m_material.program());

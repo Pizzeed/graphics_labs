@@ -18,6 +18,9 @@ namespace leng
     OBJMesh(std::string const& filename, Material const& material);
     virtual ~OBJMesh();
 
+   protected:
+    virtual auto tick(int const delta) -> void override {}
+
    private:
     auto setup_mesh() -> void;
     auto load_file(std::string const& path) -> void;
