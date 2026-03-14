@@ -1,10 +1,13 @@
+#include <glm/ext/quaternion_geometric.hpp>
 #include <iostream>
 
-#include <labs_engine/glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <ostream>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
+
+#include <labs_engine/glad/glad.h>
 #include <labs_engine/utils/types.h>
 #include <labs_engine/mesh/mesh.h>
 #include <labs_engine/material/material.h>
@@ -31,20 +34,19 @@ namespace leng
     if(not m_material.is_valid()) {
       return;
     }
-    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 id = glm::mat4(1.0f);
 
-    model = glm::scale(model, m_transform.scale);
+    glm::mat4 S = glm::scale(id, m_transform.scale);
+    glm::mat4 T = glm::translate(id, m_transform.position);
 
-    glm::quat qx = glm::angleAxis(m_transform.rotation.x, glm::vec3(1, 0, 0));
-    glm::quat qy = glm::angleAxis(m_transform.rotation.y, glm::vec3(0, 1, 0));
-    glm::quat qz = glm::angleAxis(m_transform.rotation.z, glm::vec3(0, 0, 1));
+    auto const& rot = m_transform.rotation;
+    auto rx = glm::radians(rot.x) * .5;
+    auto ry = glm::radians(rot.y) * .5;
+    auto rz = glm::radians(rot.z) * .5;
 
-    glm::quat q = qz * qy * qx;
-    glm::mat4 rotation_matrix = glm::mat4(q);
-
-    model = model * rotation_matrix;
-
-    model = glm::translate(model, m_transform.position);
+    glm::quat q = glm::normalize(glm::quat {1, {rx, ry, rz}});
+    glm::mat4 R = glm::toMat4(q);
+    glm::mat4 model = T * R * S;
 
     auto view = camera.view_matrix();
     auto proj = camera.projection_matrix();
