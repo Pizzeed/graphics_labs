@@ -7,32 +7,20 @@
 #include <glm/vec3.hpp>
 
 #include <labs_engine/utils/types.h>
-#include <labs_engine/object/render_object.h>
+#include <labs_engine/mesh/mesh.h>
 #include <labs_engine/material/material.h>
-#include <labs_engine/application/application.h>
 
 namespace leng
 {
-  class OBJMesh : public RenderObject
+  class OBJMesh : public Mesh
   {
    public:
     OBJMesh(std::string const& filename, Material const& material);
     virtual ~OBJMesh();
 
-    virtual auto tick(int const delta) -> void override;
-
-   protected:
-    virtual auto render(Camera const& camera) -> void override;
-
-    virtual auto setup_mesh() -> void;
-
-    friend void Application::run_graphics_loop();
-
    private:
+    auto setup_mesh() -> void;
     auto load_file(std::string const& path) -> void;
-
-    Material m_material;
-    bool is_material_valid = false;
 
     struct Vertex
     {
@@ -59,14 +47,8 @@ namespace leng
       }
     };
 
-    int m_vertex_count = 0;
-    int m_index_count = 0;
     std::vector<Vertex> m_vertices = {};
     std::vector<u32> m_indices = {};
     std::unordered_map<VertexKey, u32, VertexKeyHash> m_vertex_map = {};
-
-    u32 m_model_loc = 0;
-    u32 m_view_loc = 0;
-    u32 m_proj_loc = 0;
   };
 }  // namespace leng

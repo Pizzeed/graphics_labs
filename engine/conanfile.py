@@ -27,8 +27,8 @@ class LabsEngineRecipe(ConanFile):
         return '20'
 
     def requirements(self):
-        self.requires("glfw/3.4")
-        self.requires("glm/1.0.1")
+        self.requires("glfw/3.4", transitive_headers=True, transitive_libs=True)
+        self.requires("glm/1.0.1", transitive_headers=True, transitive_libs=True)
 
     def layout(self):
         cmake_layout(self)
@@ -65,7 +65,3 @@ class LabsEngineRecipe(ConanFile):
         self.cpp_info.set_property("cmake_target_name", "labs_engine::labs_engine")
         self.cpp_info.libs = ["labs_engine"]
         self.cpp_info.requires = ["glfw::glfw", "glm::glm"]
-
-
-    def imports(self):
-        self.copy('*.so*', src='lib', dst='bin')

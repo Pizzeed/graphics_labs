@@ -6,10 +6,8 @@
 #include <iostream>
 
 #include <labs_engine/glad/glad.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <GLFW/glfw3.h>
 
 #include <labs_engine/utils/types.h>
 #include <labs_engine/mesh/objmesh.h>
@@ -18,8 +16,7 @@
 namespace leng
 {
   OBJMesh::OBJMesh(std::string const& filename, Material const& material)
-    : RenderObject()
-    , m_material(material)
+    : Mesh(material)
   {
     if(not std::filesystem::exists(filename))
       std::cout << "File not found: " << filename << std::endl;
@@ -50,14 +47,7 @@ namespace leng
       GL_STATIC_DRAW
     );
 
-    glVertexAttribPointer(
-      0,
-      sizeof(Vertex::pos) / sizeof(f32),
-      GL_FLOAT,
-      GL_FALSE,
-      sizeof(Vertex),
-      0
-    );
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(
       1,
@@ -80,65 +70,10 @@ namespace leng
 
     glBindVertexArray(0);
 
-    m_model_loc = glGetUniformLocation(m_material.program(), "model");
-    m_view_loc = glGetUniformLocation(m_material.program(), "view");
-    m_proj_loc = glGetUniformLocation(m_material.program(), "projection");
-
-    if(not m_material.is_valid())
-      std::cout << "Material not valid" << std::endl;
-
     m_vertex_count = m_vertices.size();
     m_index_count = m_indices.size();
     m_vertices = {};
     m_indices = {};
-  }
-
-  auto OBJMesh::tick(int const delta) -> void {}
-
-  auto OBJMesh::render(Camera const& camera) -> void
-  {
-    if(not m_material.is_valid()) {
-      return;
-    }
-    glBindVertexArray(m_vao);
-    glm::mat4 model = glm::mat4(1.0f);
-
-    model = glm::scale(model, m_transform.scale);
-
-    glm::quat qx = glm::angleAxis(m_transform.rotation.x, glm::vec3(1, 0, 0));
-    glm::quat qy = glm::angleAxis(m_transform.rotation.y, glm::vec3(0, 1, 0));
-    glm::quat qz = glm::angleAxis(m_transform.rotation.z, glm::vec3(0, 0, 1));
-
-    glm::quat q = qz * qy * qx;
-    glm::mat4 rotation_matrix = glm::mat4(q);
-
-    model = model * rotation_matrix;
-
-    model = glm::translate(model, m_transform.position);
-
-    // auto view = camera.view_matrix();
-
-    auto proj = camera.projection_matrix();
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-    glm::mat4 view = glm::lookAt(camera.position(), camera.target(), cameraUp);
-
-    // float fov = 90.0f;
-    // float aspect = camera.aspect();
-    // float near = 0.01f;
-    // float far = 100.0f;
-
-    // glm::mat4 proj = glm::perspective(glm::radians(fov), aspect, near, far);
-
-    glUseProgram(m_material.program());
-    glUniformMatrix4fv(m_model_loc, 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(m_view_loc, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(m_proj_loc, 1, GL_FALSE, glm::value_ptr(proj));
-
-    glDrawElements(GL_TRIANGLES, m_index_count, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
   }
 
   auto parse_vertex(std::string_view s, int& vi, int& ti, int& ni)
