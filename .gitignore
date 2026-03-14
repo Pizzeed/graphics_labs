@@ -6,6 +6,7 @@
 *.lo
 *.o
 *.obj
+*imgui.ini*
 
 # Precompiled Headers
 *.gch
@@ -43,6 +44,6 @@
 *build/
 *bin/
 *cache/
-*engine/bindings/
+*bindings/
 *CMakeUserPresets*
 *compile_commands*

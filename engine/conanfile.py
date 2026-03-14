@@ -29,6 +29,8 @@ class LabsEngineRecipe(ConanFile):
     def requirements(self):
         self.requires("glfw/3.4", transitive_headers=True, transitive_libs=True)
         self.requires("glm/1.0.1", transitive_headers=True, transitive_libs=True)
+        if self.options.standalone:           
+            self.requires("imgui/1.89.1")
 
     def layout(self):
         cmake_layout(self)
@@ -41,6 +43,11 @@ class LabsEngineRecipe(ConanFile):
         tc.cache_variables["STANDALONE"] = self.options.standalone
         tc.generate()
         copy(self, "*", os.path.join(self.source_folder, "assets"), os.path.join(self.build_folder, "assets"))
+        if self.options.standalone:
+            copy(self, "*glfw*", os.path.join(self.dependencies["imgui"].package_folder,
+                "res", "bindings"), os.path.join(self.source_folder, "standalone/bindings"))
+            copy(self, "*opengl3*", os.path.join(self.dependencies["imgui"].package_folder,
+                "res", "bindings"), os.path.join(self.source_folder, "standalone/bindings"))
 
 
     def validate(self):

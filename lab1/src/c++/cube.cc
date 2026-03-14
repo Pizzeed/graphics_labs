@@ -4,7 +4,7 @@
 
 #include <labs_engine/utils/types.h>
 #include <labs_engine/material/material.h>
-#include <src/c++/cube.h>
+#include "cube.h"
 
 Cube::Cube(leng::Material const& material, int size)
   : leng::Mesh(material)

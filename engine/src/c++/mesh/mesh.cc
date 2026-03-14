@@ -40,12 +40,14 @@ namespace leng
     glm::mat4 T = glm::translate(id, m_transform.position);
 
     auto const& rot = m_transform.rotation;
-    auto rx = glm::radians(rot.x) * .5;
-    auto ry = glm::radians(rot.y) * .5;
-    auto rz = glm::radians(rot.z) * .5;
+    auto rx = glm::
+      rotate(glm::mat4(1.f), glm::radians(rot.x), glm::vec3(1.f, 0.f, 0.f));
+    auto ry = glm::
+      rotate(glm::mat4(1.f), glm::radians(rot.y), glm::vec3(0.f, 1.f, 0.f));
+    auto rz = glm::
+      rotate(glm::mat4(1.f), glm::radians(rot.z), glm::vec3(0.f, 0.f, 1.f));
 
-    glm::quat q = glm::normalize(glm::quat {1, {rx, ry, rz}});
-    glm::mat4 R = glm::toMat4(q);
+    glm::mat4 R = rz * ry * rx;
     glm::mat4 model = T * R * S;
 
     auto view = camera.view_matrix();
