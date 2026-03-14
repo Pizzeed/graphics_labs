@@ -101,7 +101,7 @@ namespace leng
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       for(auto const& object : m_objects) {
         object->tick(elapsed.count());
-        if(auto render = dynamic_cast<RenderObject*>(object.get()))
+        if(auto render = dynamic_cast<RenderObject*>(object))
           render->render(m_current_camera);
       }
       glfwPollEvents();
@@ -138,7 +138,7 @@ namespace leng
 
   auto Application::init() -> void { init_graphics(); }
 
-  auto Application::add_object(std::shared_ptr<Object> const& object) -> void
+  auto Application::add_object(Object* object) -> void
   {
     if(not object)
       return;
@@ -150,7 +150,7 @@ namespace leng
     if(not object)
       return;
     for(auto it = m_objects.begin(); it != m_objects.end(); ++it) {
-      if(it->get() == object) {
+      if(*it == object) {
         m_objects.erase(it);
         return;
       }

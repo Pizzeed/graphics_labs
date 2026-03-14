@@ -23,7 +23,6 @@ file(CREATE_LINK
 
 find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
-find_package(imgui REQUIRED)
 find_package(OpenGL REQUIRED)
 
 add_library(${PROJECT_NAME})
@@ -53,10 +52,6 @@ PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/camera/camera.cc
   
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/glad/glad.cc
-  
-  ${CMAKE_CURRENT_SOURCE_DIR}/bindings/imgui_impl_glfw.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/bindings/imgui_impl_opengl3.cpp
-
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -65,7 +60,6 @@ PUBLIC
   ${OPENGL_LIBRARIES}
   glfw
   glm::glm
-  imgui::imgui
 )
 
 if(STANDALONE)

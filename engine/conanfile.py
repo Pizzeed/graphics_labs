@@ -29,7 +29,6 @@ class LabsEngineRecipe(ConanFile):
     def requirements(self):
         self.requires("glfw/3.4")
         self.requires("glm/1.0.1")
-        self.requires("imgui/1.91.8")
 
     def layout(self):
         cmake_layout(self)
@@ -41,10 +40,6 @@ class LabsEngineRecipe(ConanFile):
         tc.cache_variables["BUILD_SHARED_LIBS"] = self.options.shared
         tc.cache_variables["STANDALONE"] = self.options.standalone
         tc.generate()
-        copy(self, "*glfw*", os.path.join(self.dependencies["imgui"].package_folder,
-            "res", "bindings"), os.path.join(self.source_folder, "bindings"))
-        copy(self, "*opengl3*", os.path.join(self.dependencies["imgui"].package_folder,
-            "res", "bindings"), os.path.join(self.source_folder, "bindings"))
         copy(self, "*", os.path.join(self.source_folder, "assets"), os.path.join(self.build_folder, "assets"))
 
 
@@ -69,7 +64,7 @@ class LabsEngineRecipe(ConanFile):
         self.cpp_info.set_property("cmake_file_name", "labs_engine")
         self.cpp_info.set_property("cmake_target_name", "labs_engine::labs_engine")
         self.cpp_info.libs = ["labs_engine"]
-        self.cpp_info.requires = ["glfw::glfw", "glm::glm", "imgui::imgui"]
+        self.cpp_info.requires = ["glfw::glfw", "glm::glm"]
 
 
     def imports(self):

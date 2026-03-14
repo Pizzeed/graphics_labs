@@ -36,7 +36,7 @@ namespace leng
    private:
     Application();
     auto init_graphics() -> void;
-    auto add_object(std::shared_ptr<Object> const& object) -> void;
+    auto add_object(Object* object) -> void;
     auto remove_object(Object* object) -> void;
     auto cleanup() -> void;
     static auto framebuffer_size_callback(
@@ -47,7 +47,7 @@ namespace leng
 
     friend class Object;
 
-    std::vector<std::shared_ptr<Object>> m_objects = {};
+    std::vector<Object*> m_objects = {};
 
     GLFWwindow* m_window;
     u32 m_window_width = 800;
