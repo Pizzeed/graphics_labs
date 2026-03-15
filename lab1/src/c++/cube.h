@@ -7,7 +7,7 @@
 class Cube : public leng::Mesh
 {
  public:
-  Cube(leng::Material const& material, int size = 3);
+  Cube(leng::Material* material, int size = 3);
   virtual ~Cube();
 
  protected:

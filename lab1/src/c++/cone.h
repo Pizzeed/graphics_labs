@@ -8,7 +8,7 @@ class Cone : public leng::Mesh
 {
  public:
   Cone(
-    leng::Material const& material,
+    leng::Material* material,
     f32 radius = 1,
     f32 height = 1,
     u32 segments = 32

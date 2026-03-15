@@ -6,7 +6,7 @@
 #include <labs_engine/material/material.h>
 #include "cone.h"
 
-Cone::Cone(leng::Material const& material, f32 radius, f32 height, u32 segments)
+Cone::Cone(leng::Material* material, f32 radius, f32 height, u32 segments)
   : leng::Mesh(material)
   , m_radius(radius)
   , m_segments(segments)

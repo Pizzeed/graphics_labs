@@ -135,13 +135,13 @@ int main()
 
   auto teapot = leng::OBJMesh {
     std::string(CMAKE_BINARY_DIR) + "/assets/teapot.obj",
-    unlit_material
+    &unlit_material
   };
   teapot.set_position({0, -1, 0});
   teapot.set_rotation({30, 0, 0});
-  auto cube = Cube {unlit_material, 4};
-  auto sphere = Sphere {unlit_material, 1, 64, 64};
-  auto cone = Cone {test_material, 1, 2, 64};
+  auto cube = Cube {&unlit_material, 4};
+  auto sphere = Sphere {&unlit_material, 1, 64, 64};
+  auto cone = Cone {&test_material, 1, 2, 64};
 
   sphere.set_position({5, 0, 0});
   cone.set_position({5, -1, 0});

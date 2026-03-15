@@ -7,7 +7,7 @@
 #include "sphere.h"
 
 Sphere::Sphere(
-  leng::Material const& material,
+  leng::Material* material,
   f32 radius,
   u32 v_segments,
   u32 h_segments
