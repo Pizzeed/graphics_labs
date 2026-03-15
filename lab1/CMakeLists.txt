@@ -29,7 +29,9 @@ add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME}
 PUBLIC
 PRIVATE
-${CMAKE_CURRENT_SOURCE_DIR}/src/c++/cube.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/cone.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/sphere.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/cube.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/main.cc
   
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/bindings/imgui_impl_glfw.cpp

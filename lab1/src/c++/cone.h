@@ -4,15 +4,22 @@
 #include <labs_engine/mesh/mesh.h>
 #include <labs_engine/material/material.h>
 
-class Cube : public leng::Mesh
+class Cone : public leng::Mesh
 {
  public:
-  Cube(leng::Material const& material, int size = 3);
-  virtual ~Cube();
+  Cone(
+    leng::Material const& material,
+    f32 radius = 1,
+    f32 height = 1,
+    u32 segments = 32
+  );
+  virtual ~Cone();
 
  protected:
   virtual auto tick(int const delta) -> void override {}
 
  private:
-  u32 m_size;
+  f32 m_radius;
+  f32 m_height;
+  u32 m_segments;
 };
