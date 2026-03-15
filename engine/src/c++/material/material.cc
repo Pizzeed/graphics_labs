@@ -167,4 +167,10 @@ namespace leng
     std::cout << "Program linkage error: " << infoLog << std::endl;
     return;
   }
+
+  auto Material::use() const -> void
+  {
+    if(m_program_compiled)
+      glUseProgram(m_shader_program);
+  }
 }  // namespace leng

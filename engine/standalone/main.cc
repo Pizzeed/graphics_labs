@@ -75,12 +75,11 @@ int main()
   app->init();
   auto material = leng::Material::from_files(
     std::string(CMAKE_BINARY_DIR)
-      + "/assets/shaders/default_unlit/default_unlit.vert.glsl",
+      + "/assets/shaders/default_lit/default_lit.vert.glsl",
     std::string(CMAKE_BINARY_DIR)
-      + "/assets/shaders/default_unlit/default_unlit.frag.glsl"
+      + "/assets/shaders/default_lit/default_lit.frag.glsl"
 
   );
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   auto teapot = leng::
     OBJMesh {std::string(CMAKE_BINARY_DIR) + "/assets/teapot.obj", material};
   auto ui = UI {&teapot};

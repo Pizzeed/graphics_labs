@@ -21,6 +21,8 @@ namespace leng
 
     auto is_valid() const -> bool;
 
+    virtual auto use() const -> void;
+
     auto program() const -> u32;
 
     auto last_error() const -> std::string;
