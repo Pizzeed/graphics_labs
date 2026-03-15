@@ -9,13 +9,13 @@ namespace leng
   class Mesh : public RenderObject
   {
    public:
-    Mesh(Material const& material);
+    Mesh(Material* material);
     virtual ~Mesh();
 
    protected:
     virtual auto render(Camera const& camera) -> void override;
 
-    Material m_material;
+    Material* m_material;
     bool is_material_valid = false;
 
     int m_vertex_count = 0;

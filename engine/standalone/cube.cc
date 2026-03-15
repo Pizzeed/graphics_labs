@@ -6,7 +6,7 @@
 #include <labs_engine/material/material.h>
 #include "cube.h"
 
-Cube::Cube(leng::Material const& material, int size)
+Cube::Cube(leng::Material* material, int size)
   : leng::Mesh(material)
   , m_size(size)
 {

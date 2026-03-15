@@ -27,6 +27,7 @@ class Lab2Recipe(ConanFile):
     def requirements(self):
         self.requires("labs_engine/0.0.1")
         self.requires("imgui/1.89.1")
+        self.requires("stb/cci.20240531")
 
     def layout(self):
         cmake_layout(self)

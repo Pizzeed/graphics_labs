@@ -15,7 +15,7 @@ namespace leng
   class OBJMesh : public Mesh
   {
    public:
-    OBJMesh(std::string const& filename, Material const& material);
+    OBJMesh(std::string const& filename, Material* material);
     virtual ~OBJMesh();
 
    protected:

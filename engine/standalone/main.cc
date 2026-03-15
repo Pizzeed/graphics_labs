@@ -81,11 +81,11 @@ int main()
 
   );
   auto teapot = leng::
-    OBJMesh {std::string(CMAKE_BINARY_DIR) + "/assets/teapot.obj", material};
+    OBJMesh {std::string(CMAKE_BINARY_DIR) + "/assets/teapot.obj", &material};
   auto ui = UI {&teapot};
   teapot.set_position({0.f, -2.f, -5.f});
 
-  auto cube = Cube {material, 4};
+  auto cube = Cube {&material, 4};
   cube.set_position({3.f, -2.f, -5.f});
 
   app->current_camera().set_position(glm::vec3 {0.f, 0.f, 3.f});

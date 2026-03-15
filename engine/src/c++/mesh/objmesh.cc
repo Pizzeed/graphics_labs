@@ -15,7 +15,7 @@
 
 namespace leng
 {
-  OBJMesh::OBJMesh(std::string const& filename, Material const& material)
+  OBJMesh::OBJMesh(std::string const& filename, Material* material)
     : Mesh(material)
   {
     if(not std::filesystem::exists(filename))

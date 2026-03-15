@@ -14,24 +14,24 @@
 
 namespace leng
 {
-  Mesh::Mesh(Material const& material)
+  Mesh::Mesh(Material* material)
     : m_material(material)
     , RenderObject()
   {
-    if(not m_material.is_valid()) {
+    if(not m_material->is_valid()) {
       std::cout << "Material not valid" << std::endl;
       return;
     }
-    m_model_loc = glGetUniformLocation(m_material.program(), "model");
-    m_view_loc = glGetUniformLocation(m_material.program(), "view");
-    m_proj_loc = glGetUniformLocation(m_material.program(), "projection");
+    m_model_loc = glGetUniformLocation(m_material->program(), "model");
+    m_view_loc = glGetUniformLocation(m_material->program(), "view");
+    m_proj_loc = glGetUniformLocation(m_material->program(), "projection");
   }
 
   Mesh::~Mesh() {}
 
   auto Mesh::render(Camera const& camera) -> void
   {
-    if(not m_material.is_valid()) {
+    if(not m_material->is_valid()) {
       return;
     }
     glm::mat4 id = glm::mat4(1.0f);
@@ -54,7 +54,7 @@ namespace leng
     auto proj = camera.projection_matrix();
 
     glBindVertexArray(m_vao);
-    m_material.use();
+    m_material->use();
 
     glUniformMatrix4fv(m_model_loc, 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(m_view_loc, 1, GL_FALSE, glm::value_ptr(view));

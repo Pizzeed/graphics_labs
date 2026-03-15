@@ -23,13 +23,13 @@ file(CREATE_LINK
 
 find_package(labs_engine REQUIRED)
 find_package(ImGui REQUIRED)
+find_package(stb REQUIRED)
 
 add_executable(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME}
 PUBLIC
 PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/cone.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/sphere.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/cube.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/main.cc
@@ -42,6 +42,7 @@ target_link_libraries(${PROJECT_NAME}
 PRIVATE
 PUBLIC
   labs_engine::labs_engine
+  stb::stb
   imgui::imgui
 )
 
