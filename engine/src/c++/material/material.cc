@@ -29,18 +29,18 @@ namespace leng
     glDeleteShader(m_fragment_shader);
   }
 
-  auto Material::from_files(
+  auto Material::load_files(
     std::string const& vertex_shader_filename,
     std::string const& fragment_shader_filename
-  ) -> Material
+  ) -> std::pair<std::string, std::string>
   {
     if(not std::filesystem::exists(vertex_shader_filename)) {
       std::cout << "File not found: " << vertex_shader_filename << std::endl;
-      return Material {"", ""};
+      return {"", ""};
     }
     if(not std::filesystem::exists(fragment_shader_filename)) {
       std::cout << "File not found: " << fragment_shader_filename << std::endl;
-      return Material {"", ""};
+      return {"", ""};
     }
     std::stringstream v_ss, f_ss;
     std::ifstream file = {};
@@ -55,7 +55,17 @@ namespace leng
               << std::endl;
     f_ss << file2.rdbuf();
     file.close();
-    return Material {v_ss.str(), f_ss.str()};
+
+    return {v_ss.str(), f_ss.str()};
+  }
+
+  auto Material::from_files(
+    std::string const& vertex_shader_filename,
+    std::string const& fragment_shader_filename
+  ) -> Material
+  {
+    auto [v, f] = load_files(vertex_shader_filename, fragment_shader_filename);
+    return Material {v, f};
   }
 
   auto Material::is_valid() const -> bool

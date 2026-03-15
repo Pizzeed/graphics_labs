@@ -31,6 +31,11 @@ namespace leng
     auto program_error() const -> std::string;
 
    protected:
+    static auto load_files(
+      std::string const& vertex_shader_filename,
+      std::string const& fragment_shader_filename
+    ) -> std::pair<std::string, std::string>;
+
     auto compile_vertex() -> void;
     auto compile_fragment() -> void;
     auto compile_program() -> void;
