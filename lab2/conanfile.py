@@ -38,7 +38,6 @@ class Lab2Recipe(ConanFile):
         tc = CMakeToolchain(self)
         tc.cache_variables["BUILD_SHARED_LIBS"] = self.options.shared
         tc.generate()
-        copy(self, "*", os.path.join("../", self.source_folder, "assets"), os.path.join(self.build_folder, "assets"))        
         copy(self, "*glfw*", os.path.join(self.dependencies["imgui"].package_folder,
             "res", "bindings"), os.path.join(self.source_folder, "src/c++/bindings"))
         copy(self, "*opengl3*", os.path.join(self.dependencies["imgui"].package_folder,

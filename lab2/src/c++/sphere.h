@@ -8,7 +8,7 @@ class Sphere : public leng::Mesh
 {
  public:
   Sphere(
-    leng::Material const& material,
+    leng::Material* material,
     f32 radius = 1,
     u32 v_segments = 32,
     u32 h_segments = 32

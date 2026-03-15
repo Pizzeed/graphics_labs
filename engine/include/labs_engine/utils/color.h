@@ -35,6 +35,8 @@ namespace leng
 
     inline constexpr auto b() const -> u8 { return m_b; }
 
+    inline constexpr auto a() const -> u8 { return m_a; }
+
     inline auto hex_rgb() const -> std::string;
 
     inline auto hex_rgba() const -> std::string;

@@ -16,7 +16,8 @@
 class UI : public leng::RenderObject
 {
  public:
-  UI()
+  UI(std::vector<leng::Material*> materials)
+    : m_materials(materials)
   {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -50,6 +51,12 @@ class UI : public leng::RenderObject
     ImGui::SliderFloat("Camera X Target", &camera_x_target, -100, 100);
     ImGui::SliderFloat("Camera Y Target", &camera_y_target, -100, 100);
     ImGui::SliderFloat("Camera Z Target", &camera_z_target, -100, 100);
+    ImGui::SliderFloat("Light X", &light_x, -100, 100);
+    ImGui::SliderFloat("Light Y", &light_y, -100, 100);
+    ImGui::SliderFloat("Light Z", &light_z, -100, 100);
+    ImGui::SliderFloat("Light R", &light_r, 0, 1);
+    ImGui::SliderFloat("Light G", &light_g, 0, 1);
+    ImGui::SliderFloat("Light B", &light_b, 0, 1);
     ImGui::Checkbox("Wireframe", &m_wireframe);
     ImGui::End();
     ImGui::Render();
@@ -64,6 +71,18 @@ class UI : public leng::RenderObject
     leng::Application::get()->current_camera().set_target(
       {camera_x_target, camera_y_target, camera_z_target}
     );
+
+    for(auto material : m_materials) {
+      if(auto colmat = dynamic_cast<ColoredMaterial*>(material)) {
+        colmat->set_light_position({light_x, light_y, light_z});
+        colmat->set_light_color({light_r, light_g, light_b});
+      }
+      else if(auto texmat = dynamic_cast<TexturedMaterial*>(material)) {
+        texmat->set_light_position({light_x, light_y, light_z});
+        texmat->set_light_color({light_r, light_g, light_b});
+      }
+    }
+
     if(m_prev_wireframe != m_wireframe) {
       if(m_wireframe) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -82,6 +101,13 @@ class UI : public leng::RenderObject
   f32 camera_x_target = 0.f;
   f32 camera_y_target = 0.f;
   f32 camera_z_target = 0.f;
+  f32 light_x = 0.f;
+  f32 light_y = 0.f;
+  f32 light_z = 0.f;
+  f32 light_r = 1.f;
+  f32 light_g = 1.f;
+  f32 light_b = 1.f;
+  std::vector<leng::Material*> m_materials;
   bool m_wireframe = false;
   bool m_prev_wireframe = false;
 };
@@ -94,6 +120,10 @@ int main()
                ->with_height(720)
                ->with_title("Test");
   app->init();
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   auto matte_material = ColoredMaterial::from_files(
     std::string(CMAKE_BINARY_DIR) + "/assets/shaders/matte/vert.glsl",
     std::string(CMAKE_BINARY_DIR) + "/assets/shaders/matte/frag.glsl"
@@ -107,7 +137,7 @@ int main()
     std::string(CMAKE_BINARY_DIR) + "/assets/shaders/textured/frag.glsl"
   );
 
-  matte_material.set_color(leng::Color("#ff000033"));
+  matte_material.set_color(leng::Color("#ff000077"));
   glossy_material.set_color(leng::Color::blue());
   textured_material.set_texture(
     std::string(CMAKE_BINARY_DIR) + "/assets/texture.png"
@@ -115,15 +145,16 @@ int main()
 
   auto teapot = leng::OBJMesh {
     std::string(CMAKE_BINARY_DIR) + "/assets/teapot.obj",
-    glossy_material
+    &glossy_material
   };
-  auto cube = Cube {textured_material, 4};
-  auto sphere = Sphere {matte_material, 1, 64, 64};
+  auto cube = Cube {&textured_material, 4};
+  auto sphere = Sphere {&matte_material, 1, 64, 64};
 
-  teapot.set_position({-3, 0, 0});
+  teapot.set_position({-5, 0, 0});
   sphere.set_position({3, 0, 0});
 
-  auto ui = UI {};
+  auto ui = UI {std::vector<
+    leng::Material*> {&matte_material, &glossy_material, &textured_material}};
 
   app->current_camera().set_fov(90);
   app->run_graphics_loop();

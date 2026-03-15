@@ -21,6 +21,12 @@ file(CREATE_LINK
     SYMBOLIC
 )
 
+file(COPY 
+        "${CMAKE_CURRENT_SOURCE_DIR}/assets/" 
+     DESTINATION 
+        "${CMAKE_CURRENT_BINARY_DIR}/assets/"
+)
+
 find_package(labs_engine REQUIRED)
 find_package(ImGui REQUIRED)
 find_package(stb REQUIRED)
@@ -30,6 +36,8 @@ add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME}
 PUBLIC
 PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/colored_material.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/textured_material.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/sphere.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/cube.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/main.cc
