@@ -24,6 +24,7 @@ class TexturedMaterial : public leng::Material
   auto set_texture(std::string const& filename) -> void;
   auto set_light_position(glm::vec3 const& pos) -> void;
   auto set_light_color(glm::vec3 const& color) -> void;
+  auto set_light_intensity(f32 intensity) -> void;
 
   auto use() const -> void override;
 
@@ -31,4 +32,5 @@ class TexturedMaterial : public leng::Material
   u32 m_texture = 0;
   glm::vec3 m_light_pos;
   glm::vec3 m_light_color;
+  f32 m_light_intensity;
 };

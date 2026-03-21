@@ -57,6 +57,7 @@ class UI : public leng::RenderObject
     ImGui::SliderFloat("Light R", &light_r, 0, 1);
     ImGui::SliderFloat("Light G", &light_g, 0, 1);
     ImGui::SliderFloat("Light B", &light_b, 0, 1);
+    ImGui::SliderFloat("Light Intensity", &light_int, 0, 1);
     ImGui::Checkbox("Wireframe", &m_wireframe);
     ImGui::End();
     ImGui::Render();
@@ -76,10 +77,12 @@ class UI : public leng::RenderObject
       if(auto colmat = dynamic_cast<ColoredMaterial*>(material)) {
         colmat->set_light_position({light_x, light_y, light_z});
         colmat->set_light_color({light_r, light_g, light_b});
+        colmat->set_light_intensity(light_int);
       }
       else if(auto texmat = dynamic_cast<TexturedMaterial*>(material)) {
         texmat->set_light_position({light_x, light_y, light_z});
         texmat->set_light_color({light_r, light_g, light_b});
+        texmat->set_light_intensity(light_int);
       }
     }
 
@@ -107,6 +110,7 @@ class UI : public leng::RenderObject
   f32 light_r = 1.f;
   f32 light_g = 1.f;
   f32 light_b = 1.f;
+  f32 light_int = .5f;
   std::vector<leng::Material*> m_materials;
   bool m_wireframe = false;
   bool m_prev_wireframe = false;

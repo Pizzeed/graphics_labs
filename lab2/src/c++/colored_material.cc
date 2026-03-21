@@ -58,6 +58,10 @@ auto ColoredMaterial::use() const -> void
     cam_pos.y,
     cam_pos.z
   );
+  glUniform1f(
+    glGetUniformLocation(program(), "lightIntensity"),
+    m_light_intensity
+  );
 }
 
 auto ColoredMaterial::set_light_position(glm::vec3 const& pos) -> void
@@ -68,4 +72,13 @@ auto ColoredMaterial::set_light_position(glm::vec3 const& pos) -> void
 auto ColoredMaterial::set_light_color(glm::vec3 const& color) -> void
 {
   m_light_color = color;
+}
+
+auto ColoredMaterial::set_light_intensity(f32 intensity) -> void
+{
+  if(intensity > 1.f)
+    intensity = 1.f;
+  else if(intensity < 0.f)
+    intensity = 0.f;
+  m_light_intensity = intensity;
 }

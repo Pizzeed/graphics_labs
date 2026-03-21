@@ -22,6 +22,7 @@ class ColoredMaterial : public leng::Material
   auto set_color(leng::Color const& color) -> void;
   auto set_light_position(glm::vec3 const& pos) -> void;
   auto set_light_color(glm::vec3 const& color) -> void;
+  auto set_light_intensity(f32 intensity) -> void;
 
   auto use() const -> void override;
 
@@ -29,4 +30,5 @@ class ColoredMaterial : public leng::Material
   leng::Color m_color;
   glm::vec3 m_light_pos;
   glm::vec3 m_light_color;
+  f32 m_light_intensity;
 };
