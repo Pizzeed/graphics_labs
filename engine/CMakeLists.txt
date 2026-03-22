@@ -11,7 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(
   labs_engine
-  VERSION 0.0.1
+  VERSION 0.0.2
   DESCRIPTION "Simple graphical application engine for SPBPU computer graphics labs"
   LANGUAGES CXX)
 
@@ -45,6 +45,7 @@ PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/utils/color.cc
 
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/application/application.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/scene/scene.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/object/object.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/object/render_object.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/mesh/mesh.cc

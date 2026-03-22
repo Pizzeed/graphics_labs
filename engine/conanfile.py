@@ -7,7 +7,7 @@ from conan.tools.files import copy, rmdir
 
 class LabsEngineRecipe(ConanFile):
     name = "labs_engine"
-    version = "0.0.1"
+    version = "0.0.2"
 
     settings = "os", "compiler", "build_type", "arch"
 

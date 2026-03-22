@@ -8,6 +8,7 @@
 
 #include <labs_engine/utils/color.h>
 #include <labs_engine/application/application.h>
+#include <labs_engine/scene/scene.h>
 #include <labs_engine/object/render_object.h>
 
 namespace leng
@@ -24,8 +25,8 @@ namespace leng
     app->m_window_width = width;
     app->m_window_height = height;
     glViewport(0, 0, width, height);
-    app->m_current_camera.set_width(width);
-    app->m_current_camera.set_height(height);
+    app->m_current_scene->current_camera().set_width(width);
+    app->m_current_scene->current_camera().set_height(height);
   }
 
   auto Application::get() -> Application*
@@ -34,13 +35,27 @@ namespace leng
     return &inst;
   }
 
-  Application::Application()
-    : m_current_camera(
-        Camera::perspective({}, {}, 90.f, 800.f, 600.f, 0.01f, 1000.f)
-      )
-  {}
+  Application::Application() {}
 
-  Application::~Application() { cleanup(); }
+  auto Application::with_width(u32 const width) -> Application*
+  {
+    m_window_width = width;
+    return this;
+  }
+
+  auto Application::with_height(u32 const height) -> Application*
+  {
+    m_window_height = height;
+    return this;
+  }
+
+  auto Application::with_title(std::string const& title) -> Application*
+  {
+    m_window_title = title;
+    return this;
+  }
+
+  auto Application::init() -> void { init_graphics(); }
 
   auto Application::init_graphics() -> void
   {
@@ -99,68 +114,37 @@ namespace leng
       last_time = current_time;
       glClearColor(32.f / 255.f, 15.f / 255.f, 74.f / 255.f, 1.0f);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      for(auto const& object : m_objects) {
-        object->tick(elapsed.count());
-        if(auto render = dynamic_cast<RenderObject*>(object))
-          render->render(m_current_camera);
-      }
+      m_current_scene->tick(elapsed.count());
       glfwPollEvents();
       glfwSwapBuffers(m_window);
     }
   }
 
+  Application::~Application() { cleanup(); }
+
   auto Application::cleanup() -> void
   {
-    m_objects = {};
+    m_current_scene = nullptr;
     glfwDestroyWindow(m_window);
     glfwTerminate();
   }
 
   auto Application::window() -> GLFWwindow* const { return m_window; }
 
-  auto Application::with_width(u32 const width) -> Application*
+  auto Application::current_scene() -> std::shared_ptr<Scene> const&
   {
-    m_window_width = width;
-    return this;
+    return m_current_scene;
   }
 
-  auto Application::with_height(u32 const height) -> Application*
+  auto Application::set_current_scene(std::shared_ptr<Scene> const& scene)
+    -> void
   {
-    m_window_height = height;
-    return this;
+    m_current_scene = scene;
   }
 
-  auto Application::with_title(std::string const& title) -> Application*
+  auto Application::set_current_scene(std::shared_ptr<Scene>&& scene) -> void
   {
-    m_window_title = title;
-    return this;
+    m_current_scene = std::move(scene);
   }
 
-  auto Application::init() -> void { init_graphics(); }
-
-  auto Application::add_object(Object* object) -> void
-  {
-    if(not object)
-      return;
-    m_objects.push_back(object);
-  }
-
-  auto Application::remove_object(Object* object) -> void
-  {
-    if(not object)
-      return;
-    for(auto it = m_objects.begin(); it != m_objects.end(); ++it) {
-      if(*it == object) {
-        m_objects.erase(it);
-        return;
-      }
-    }
-  }
-
-  auto Application::current_camera() -> Camera& { return m_current_camera; }
-
-  auto Application::set_current_camera(Camera const& camera) -> void
-  {
-    m_current_camera = camera;
-  }
 }  // namespace leng

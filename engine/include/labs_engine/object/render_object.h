@@ -5,6 +5,7 @@
 #include <labs_engine/utils/types.h>
 #include <labs_engine/utils/transform.h>
 #include <labs_engine/application/application.h>
+#include <labs_engine/scene/scene.h>
 #include <labs_engine/object/object.h>
 
 namespace leng
@@ -30,6 +31,6 @@ namespace leng
     u32 m_vbo = 0;
     u32 m_ebo = 0;
 
-    friend void Application::run_graphics_loop();
+    friend void Scene::tick(int);
   };
 }  // namespace leng

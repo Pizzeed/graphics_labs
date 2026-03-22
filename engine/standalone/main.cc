@@ -1,6 +1,7 @@
 #include <imgui.h>
 
 #include <labs_engine/glad/glad.h>
+#include <labs_engine/scene/scene.h>
 #include <labs_engine/application/application.h>
 #include <labs_engine/material/material.h>
 #include <labs_engine/mesh/objmesh.h>
@@ -13,7 +14,8 @@ class UI : public leng::RenderObject
 {
  public:
   UI(leng::OBJMesh* teapot)
-    : m_teapot(teapot)
+    : RenderObject()
+    , m_teapot(teapot)
   {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -73,6 +75,9 @@ int main()
                ->with_height(600)
                ->with_title("Test");
   app->init();
+  app->set_current_scene(std::make_shared<leng::Scene>());
+  auto scene = app->current_scene();
+
   auto material = leng::Material::from_files(
     std::string(CMAKE_BINARY_DIR)
       + "/assets/shaders/default_lit/default_lit.vert.glsl",
@@ -80,15 +85,19 @@ int main()
       + "/assets/shaders/default_lit/default_lit.frag.glsl"
 
   );
-  auto teapot = leng::
-    OBJMesh {std::string(CMAKE_BINARY_DIR) + "/assets/teapot.obj", &material};
-  auto ui = UI {&teapot};
-  teapot.set_position({0.f, -2.f, -5.f});
 
-  auto cube = Cube {&material, 4};
-  cube.set_position({3.f, -2.f, -5.f});
+  auto teapot = scene->create_object<
+    leng::
+      OBJMesh>(std::string(CMAKE_BINARY_DIR) + "/assets/teapot.obj", &material);
+  auto cube = scene->create_object<Cube>(&material, 4);
+  auto ui = scene->create_object<UI>(teapot);
 
-  app->current_camera().set_position(glm::vec3 {0.f, 0.f, 3.f});
+  teapot->set_position({0.f, -2.f, -5.f});
+  cube->set_position({3.f, -2.f, -5.f});
+
+  app->current_scene()->current_camera().set_position(
+    glm::vec3 {0.f, 0.f, 3.f}
+  );
   app->run_graphics_loop();
   return 0;
 }

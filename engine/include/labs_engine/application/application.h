@@ -2,13 +2,17 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 
 #include <GLFW/glfw3.h>
 
 #include <labs_engine/utils/types.h>
 #include <labs_engine/object/object.h>
 #include <labs_engine/camera/camera.h>
+
+namespace leng
+{
+  class Scene;
+}  // namespace leng
 
 namespace leng
 {
@@ -29,15 +33,14 @@ namespace leng
     auto run_graphics_loop() -> void;
 
     auto window() -> GLFWwindow* const;
-    auto current_camera() -> Camera&;
 
-    auto set_current_camera(Camera const& camera) -> void;
+    auto current_scene() -> std::shared_ptr<Scene> const&;
+    auto set_current_scene(std::shared_ptr<Scene> const& scene) -> void;
+    auto set_current_scene(std::shared_ptr<Scene>&& scene) -> void;
 
    private:
     Application();
     auto init_graphics() -> void;
-    auto add_object(Object* object) -> void;
-    auto remove_object(Object* object) -> void;
     auto cleanup() -> void;
     static auto framebuffer_size_callback(
       GLFWwindow* window,
@@ -45,15 +48,10 @@ namespace leng
       int height
     ) -> void;
 
-    friend class Object;
-
-    std::vector<Object*> m_objects = {};
-
+    std::shared_ptr<Scene> m_current_scene = nullptr;
     GLFWwindow* m_window;
     u32 m_window_width = 800;
     u32 m_window_height = 600;
     std::string m_window_title = "New Application";
-
-    Camera m_current_camera;
   };
 }  // namespace leng

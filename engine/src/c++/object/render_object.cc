@@ -8,7 +8,6 @@
 namespace leng
 {
   RenderObject::RenderObject()
-    : Object()
   {
     glGenBuffers(1, &m_vbo);
     glGenVertexArrays(1, &m_vao);
