@@ -25,7 +25,7 @@ class GraphicsCWRecipe(ConanFile):
         return '20'
 
     def requirements(self):
-        self.requires("labs_engine/0.0.1")
+        self.requires("labs_engine/0.0.2")
         self.requires("imgui/1.89.1")
         self.requires("stb/cci.20240531")
 

@@ -29,6 +29,11 @@ namespace leng
     m_current_camera = camera;
   }
 
+  auto Scene::add_object(std::shared_ptr<Object> const& object) -> void
+  {
+    m_objects.push_back(object);
+  }
+
   auto Scene::destroy_object(Object* object) -> void
   {
     for(auto it = m_objects.begin(); it != m_objects.end(); ++it) {

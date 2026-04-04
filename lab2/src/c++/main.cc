@@ -16,8 +16,9 @@
 class UI : public leng::RenderObject
 {
  public:
-  UI(std::vector<leng::Material*> materials)
+  UI(std::vector<leng::Material*> materials, Sphere* light_marker)
     : m_materials(materials)
+    , m_light_marker(light_marker)
   {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -73,6 +74,9 @@ class UI : public leng::RenderObject
       {camera_x_target, camera_y_target, camera_z_target}
     );
 
+    if(m_light_marker)
+      m_light_marker->set_position({light_x, light_y, light_z});
+
     for(auto material : m_materials) {
       if(auto colmat = dynamic_cast<ColoredMaterial*>(material)) {
         colmat->set_light_position({light_x, light_y, light_z});
@@ -114,6 +118,7 @@ class UI : public leng::RenderObject
   std::vector<leng::Material*> m_materials;
   bool m_wireframe = false;
   bool m_prev_wireframe = false;
+  Sphere* m_light_marker = nullptr;
 };
 
 int main()
@@ -128,9 +133,13 @@ int main()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  auto matte_material = ColoredMaterial::from_files(
+  auto matte_red_material = ColoredMaterial::from_files(
     std::string(CMAKE_BINARY_DIR) + "/assets/shaders/matte/vert.glsl",
     std::string(CMAKE_BINARY_DIR) + "/assets/shaders/matte/frag.glsl"
+  );
+  auto unlit_material = ColoredMaterial::from_files(
+    std::string(CMAKE_BINARY_DIR) + "/assets/shaders/unlit/vert.glsl",
+    std::string(CMAKE_BINARY_DIR) + "/assets/shaders/unlit/frag.glsl"
   );
   auto glossy_material = ColoredMaterial::from_files(
     std::string(CMAKE_BINARY_DIR) + "/assets/shaders/glossy/vert.glsl",
@@ -141,7 +150,8 @@ int main()
     std::string(CMAKE_BINARY_DIR) + "/assets/shaders/textured/frag.glsl"
   );
 
-  matte_material.set_color(leng::Color("#ff000077"));
+  matte_red_material.set_color(leng::Color("#ff000077"));
+  unlit_material.set_color(leng::Color("#ffffffff"));
   glossy_material.set_color(leng::Color::blue());
   textured_material.set_texture(
     std::string(CMAKE_BINARY_DIR) + "/assets/texture.png"
@@ -152,13 +162,18 @@ int main()
     &glossy_material
   };
   auto cube = Cube {&textured_material, 4};
-  auto sphere = Sphere {&matte_material, 1, 64, 64};
+  auto sphere = Sphere {&matte_red_material, 1, 64, 64};
+  auto light = Sphere {&unlit_material, .2, 64, 64};
 
   teapot.set_position({-5, 0, 0});
   sphere.set_position({3, 0, 0});
 
-  auto ui = UI {std::vector<
-    leng::Material*> {&matte_material, &glossy_material, &textured_material}};
+  auto ui = UI {
+    std::vector<
+      leng::
+        Material*> {&matte_red_material, &glossy_material, &textured_material},
+    &light
+  };
 
   app->current_camera().set_fov(90);
   app->run_graphics_loop();

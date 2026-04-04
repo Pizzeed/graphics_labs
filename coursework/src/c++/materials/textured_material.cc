@@ -8,7 +8,7 @@
 #include <labs_engine/material/material.h>
 #include <labs_engine/utils/types.h>
 
-#include <src/c++/textured_material.h>
+#include "textured_material.h"
 
 TexturedMaterial::TexturedMaterial(
   std::string const& vertex_shader,

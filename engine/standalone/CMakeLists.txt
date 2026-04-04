@@ -5,7 +5,7 @@ add_executable(${PROJECT_NAME}-bench)
 target_sources(${PROJECT_NAME}-bench
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cc
-        ${CMAKE_CURRENT_SOURCE_DIR}/cube.cc
+        # ${CMAKE_CURRENT_SOURCE_DIR}/cube.cc
           
         ${CMAKE_CURRENT_SOURCE_DIR}/bindings/imgui_impl_glfw.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/bindings/imgui_impl_opengl3.cpp

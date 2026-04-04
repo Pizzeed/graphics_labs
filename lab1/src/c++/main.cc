@@ -14,9 +14,10 @@
 class UI : public leng::RenderObject
 {
  public:
-  UI(Sphere* s, Cone* c)
+  UI(Sphere* s, Cone* c, leng::OBJMesh* teapot)
     : m_sphere(s)
     , m_cone(c)
+    , m_teapot(teapot)
   {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -81,12 +82,16 @@ class UI : public leng::RenderObject
           m_sphere->set_scale({1.5, 1.5, 1.5});
         if(m_cone)
           m_cone->set_position({5, -4, 0});
+        if(m_teapot)
+          m_teapot->set_rotation({30, 0, 0});
       }
       else {
         if(m_sphere)
           m_sphere->set_scale({1, 1, 1});
         if(m_cone)
           m_cone->set_position({5, -1, 0});
+        if(m_teapot)
+          m_teapot->set_rotation({0, 0, 0});
       }
       m_prev_task4 = m_task4;
     }
@@ -105,6 +110,7 @@ class UI : public leng::RenderObject
   bool m_prev_task4 = false;
   Sphere* m_sphere = nullptr;
   Cone* m_cone = nullptr;
+  leng::OBJMesh* m_teapot = nullptr;
 };
 
 int main()
@@ -138,7 +144,7 @@ int main()
     &unlit_material
   };
   teapot.set_position({0, -1, 0});
-  teapot.set_rotation({30, 0, 0});
+
   auto cube = Cube {&unlit_material, 4};
   auto sphere = Sphere {&unlit_material, 1, 64, 64};
   auto cone = Cone {&test_material, 1, 2, 64};
@@ -146,7 +152,7 @@ int main()
   sphere.set_position({5, 0, 0});
   cone.set_position({5, -1, 0});
 
-  auto ui = UI {&sphere, &cone};
+  auto ui = UI {&sphere, &cone, &teapot};
 
   app->current_camera().set_fov(90);
   app->run_graphics_loop();

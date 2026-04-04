@@ -29,6 +29,8 @@ namespace leng
     auto current_camera() -> Camera&;
     auto set_current_camera(Camera const& camera) -> void;
 
+    auto add_object(std::shared_ptr<Object> const& object) -> void;
+
     auto destroy_object(Object* object) -> void;
 
     template <ObjectDerived T, class... Args>

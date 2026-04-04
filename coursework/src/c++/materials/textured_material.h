@@ -1,10 +1,11 @@
 #pragma once
 
+#include <glm/ext/vector_float3.hpp>
+
 #include <labs_engine/glad/glad.h>
 #include <labs_engine/material/material.h>
 #include <labs_engine/utils/color.h>
 #include <labs_engine/utils/types.h>
-#include <glm/ext/vector_float3.hpp>
 
 class TexturedMaterial : public leng::Material
 {

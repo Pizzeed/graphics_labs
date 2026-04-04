@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <type_traits>
 
 namespace leng
@@ -13,6 +14,7 @@ namespace leng
     virtual ~Object();
     virtual auto tick(int const delta) -> void = 0;
     virtual auto destroy() -> void;
+    virtual auto clone(bool on_scene = false) -> std::shared_ptr<Object> = 0;
 
     auto scene() -> Scene*;
 

@@ -4,12 +4,12 @@
 #include <labs_engine/material/material.h>
 #include <labs_engine/utils/color.h>
 
-#include <src/c++/bindings/imgui_impl_glfw.h>
-#include <src/c++/bindings/imgui_impl_opengl3.h>
+#include <bindings/imgui_impl_glfw.h>
+#include <bindings/imgui_impl_opengl3.h>
 
-#include "shapes/sphere.h"
-#include "materials/colored_material.h"
-#include "materials/textured_material.h"
+#include <shapes/sphere.h>
+#include <materials/colored_material.h>
+#include <materials/textured_material.h>
 
 class UI : public leng::RenderObject
 {
@@ -57,10 +57,10 @@ class UI : public leng::RenderObject
 
   auto tick(int const delta) -> void override
   {
-    leng::Application::get()->current_camera().set_position(
+    leng::Application::get()->current_scene()->current_camera().set_position(
       {camera_x_position, camera_y_position, camera_z_position}
     );
-    leng::Application::get()->current_camera().set_target(
+    leng::Application::get()->current_scene()->current_camera().set_target(
       {camera_x_target, camera_y_target, camera_z_target}
     );
 
@@ -98,7 +98,7 @@ int main()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  app->current_camera().set_fov(90);
+  app->current_scene()->current_camera().set_fov(90);
   app->run_graphics_loop();
   return 0;
 }

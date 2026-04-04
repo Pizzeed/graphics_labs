@@ -3,9 +3,10 @@
 #include <labs_engine/glad/glad.h>
 #include <labs_engine/application/application.h>
 #include <labs_engine/material/material.h>
+#include <labs_engine/scene/scene.h>
 #include <labs_engine/utils/types.h>
 
-#include <src/c++/colored_material.h>
+#include <materials/colored_material.h>
 
 ColoredMaterial::ColoredMaterial(
   std::string const& vertex_shader,
@@ -51,7 +52,10 @@ auto ColoredMaterial::use() const -> void
     m_light_color.y,
     m_light_color.z
   );
-  auto cam_pos = leng::Application::get()->current_camera().position();
+  auto cam_pos = leng::Application::get()
+                   ->current_scene()
+                   ->current_camera()
+                   .position();
   glUniform3f(
     glGetUniformLocation(program(), "viewPos"),
     cam_pos.x,

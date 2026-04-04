@@ -6,7 +6,7 @@
 #include <labs_engine/material/material.h>
 #include <labs_engine/mesh/objmesh.h>
 
-#include "cube.h"
+// #include "cube.h"
 #include "bindings/imgui_impl_glfw.h"
 #include "bindings/imgui_impl_opengl3.h"
 
@@ -58,6 +58,8 @@ class UI : public leng::RenderObject
     }
   }
 
+  auto clone(bool) -> std::shared_ptr<Object> override { return nullptr; }
+
  public:
   f32 x_angle = 0.f;
   f32 y_angle = 0.f;
@@ -89,11 +91,14 @@ int main()
   auto teapot = scene->create_object<
     leng::
       OBJMesh>(std::string(CMAKE_BINARY_DIR) + "/assets/teapot.obj", &material);
-  auto cube = scene->create_object<Cube>(&material, 4);
+  // auto cube = scene->create_object<Cube>(&material, 4);
   auto ui = scene->create_object<UI>(teapot);
 
   teapot->set_position({0.f, -2.f, -5.f});
-  cube->set_position({3.f, -2.f, -5.f});
+  auto clone = static_pointer_cast<leng::OBJMesh>(teapot->clone(true));
+  clone->set_position({2.f, -2.f, -5.f});
+
+  // cube->set_position({3.f, -2.f, -5.f});
 
   app->current_scene()->current_camera().set_position(
     glm::vec3 {0.f, 0.f, 3.f}

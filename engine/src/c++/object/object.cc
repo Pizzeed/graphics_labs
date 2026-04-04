@@ -14,4 +14,6 @@ namespace leng
       return;
     m_scene->destroy_object(this);
   }
+
+  auto Object::scene() -> Scene* { return m_scene; }
 }  // namespace leng

@@ -40,4 +40,11 @@ namespace leng
   {
     m_transform = transform;
   }
+
+  auto RenderObject::transform() const -> Transform const&
+  {
+    return m_transform;
+  }
+
+  auto RenderObject::transform() -> Transform& { return m_transform; }
 }  // namespace leng

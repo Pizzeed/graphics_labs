@@ -74,6 +74,7 @@ namespace leng
     m_index_count = m_indices.size();
     m_vertices = {};
     m_indices = {};
+    m_vertex_map = {};
   }
 
   auto parse_vertex(std::string_view s, int& vi, int& ti, int& ni)
@@ -161,6 +162,19 @@ namespace leng
       }
     }
     std::cout << "Loaded " << m_vertices.size() << " vertices" << std::endl;
+  }
+
+  auto OBJMesh::clone(bool on_scene) -> std::shared_ptr<Object>
+  {
+    auto obj = std::make_shared<OBJMesh>(*this);
+    if(on_scene and this->scene())
+      this->scene()->add_object(obj);
+
+    obj->m_model_loc = this->m_model_loc;
+    obj->m_view_loc = this->m_view_loc;
+    obj->m_proj_loc = this->m_proj_loc;
+
+    return obj;
   }
 
 }  // namespace leng

@@ -110,11 +110,11 @@ namespace leng
 
     while(not glfwWindowShouldClose(m_window)) {
       auto current_time = steady_clock::now();
-      auto elapsed = duration_cast<seconds>(current_time - last_time);
+      auto elapsed = duration<float>(current_time - last_time).count();
       last_time = current_time;
       glClearColor(32.f / 255.f, 15.f / 255.f, 74.f / 255.f, 1.0f);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      m_current_scene->tick(elapsed.count());
+      m_current_scene->tick(elapsed);
       glfwPollEvents();
       glfwSwapBuffers(m_window);
     }

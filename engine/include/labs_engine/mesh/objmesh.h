@@ -16,7 +16,11 @@ namespace leng
   {
    public:
     OBJMesh(std::string const& filename, Material* material);
+
     virtual ~OBJMesh();
+
+    virtual auto clone(bool on_scene = false)
+      -> std::shared_ptr<Object> override;
 
    protected:
     virtual auto tick(int const delta) -> void override {}

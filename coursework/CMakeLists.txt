@@ -45,6 +45,12 @@ PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/bindings/imgui_impl_opengl3.cpp
 )
 
+target_include_directories(${PROJECT_NAME}
+PUBLIC
+PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++
+)
+
 target_link_libraries(${PROJECT_NAME}
 PRIVATE
 PUBLIC
