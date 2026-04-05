@@ -31,6 +31,6 @@ namespace leng
     u32 m_vbo = 0;
     u32 m_ebo = 0;
 
-    friend void Scene::tick(int);
+    friend void Scene::tick(f32);
   };
 }  // namespace leng

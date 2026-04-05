@@ -15,7 +15,7 @@ class Cube : public leng::Mesh
   virtual ~Cube();
 
  protected:
-  virtual auto tick(int const delta) -> void override {}
+  virtual auto tick(f32 const delta) -> void override {}
 
  private:
   u32 m_size;

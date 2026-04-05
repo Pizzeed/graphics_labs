@@ -24,7 +24,7 @@ namespace leng
     auto operator=(Scene const&) = delete;
     auto operator=(Scene&&) = delete;
 
-    auto tick(int delta) -> void;
+    auto tick(f32 delta) -> void;
 
     auto current_camera() -> Camera&;
     auto set_current_camera(Camera const& camera) -> void;
@@ -38,6 +38,8 @@ namespace leng
 
    private:
     std::vector<std::shared_ptr<Object>> m_objects = {};
+    std::vector<std::shared_ptr<Object>> m_added = {};
+    std::vector<std::shared_ptr<Object>> m_removed = {};
     Camera m_current_camera;
 
     friend void Application::run_graphics_loop();

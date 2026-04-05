@@ -1,6 +1,7 @@
 #include <labs_engine/object/object.h>
 #include <labs_engine/scene/scene.h>
 #include <labs_engine/object/render_object.h>
+#include <algorithm>
 
 namespace leng
 {
@@ -13,10 +14,23 @@ namespace leng
 
   Scene::~Scene() {}
 
-  auto Scene::tick(int delta) -> void
+  auto Scene::tick(f32 delta) -> void
   {
+    auto removed = std::
+      remove_if(m_objects.begin(), m_objects.end(), [this](auto const& object) {
+        return std::find(m_removed.begin(), m_removed.end(), object)
+            != m_removed.end();
+      });
+
+    m_objects.erase(removed, m_objects.end());
+    m_objects.append_range(m_added);
+
+    m_added.clear();
+    m_removed.clear();
+
     for(auto const& object : m_objects) {
-      object->tick(delta);
+      if(object)
+        object->tick(delta);
       if(auto render = dynamic_cast<RenderObject*>(object.get()))
         render->render(m_current_camera);
     }
@@ -31,16 +45,56 @@ namespace leng
 
   auto Scene::add_object(std::shared_ptr<Object> const& object) -> void
   {
-    m_objects.push_back(object);
+    if(std::find(m_added.begin(), m_added.end(), object) != m_added.end())
+      return;
+
+    if(std::find(m_objects.begin(), m_objects.end(), object) != m_objects.end())
+      return;
+
+    if(std::find(m_removed.begin(), m_removed.end(), object) != m_removed.end())
+      m_removed.erase(
+        std::remove(m_removed.begin(), m_removed.end(), object),
+        m_removed.end()
+      );
+    else
+      m_added.push_back(object);
   }
 
-  auto Scene::destroy_object(Object* object) -> void
+  auto Scene::destroy_object(Object* ptr) -> void
   {
-    for(auto it = m_objects.begin(); it != m_objects.end(); ++it) {
-      if(it->get() == object) {
-        m_objects.erase(it);
-        return;
-      }
-    }
+    if(not ptr)
+      return;
+
+    if(
+      auto found = std::find_if(
+        m_added.begin(),
+        m_added.end(),
+        [ptr](auto const& object) { return object.get() == ptr; }
+      );
+      found != m_added.end()
+    )
+      m_added.erase(found);
+
+    if(
+      auto found = std::find_if(
+        m_removed.begin(),
+        m_removed.end(),
+        [ptr](auto const& object) { return object.get() == ptr; }
+      );
+      found != m_removed.end()
+    )
+      return;
+
+    if(
+      auto found = std::find_if(
+        m_objects.begin(),
+        m_objects.end(),
+        [ptr](auto const& object) { return object.get() == ptr; }
+      );
+      found == m_objects.end()
+    )
+      return;
+    else
+      m_removed.push_back(*found);
   }
 }  // namespace leng

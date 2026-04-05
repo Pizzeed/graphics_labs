@@ -51,7 +51,7 @@ class UI : public leng::RenderObject
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   }
 
-  auto tick(int const delta) -> void override
+  auto tick(f32 const delta) -> void override
   {
     if(m_teapot) {
       m_teapot->set_rotation({x_angle, y_angle, z_angle});
@@ -97,6 +97,17 @@ int main()
   teapot->set_position({0.f, -2.f, -5.f});
   auto clone = static_pointer_cast<leng::OBJMesh>(teapot->clone(true));
   clone->set_position({2.f, -2.f, -5.f});
+
+  auto clone2 = static_pointer_cast<leng::OBJMesh>(clone->clone(false));
+  clone2->set_position({3.f, -2.f, -5.f});
+  scene->add_object(clone2);
+
+  auto clone3 = static_pointer_cast<leng::OBJMesh>(clone2->clone(false));
+  clone3->set_position({6.f, -2.f, -5.f});
+
+  scene->add_object(clone3);
+
+  // scene->destroy_object(clone3.get());
 
   // cube->set_position({3.f, -2.f, -5.f});
 

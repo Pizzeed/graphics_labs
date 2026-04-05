@@ -3,6 +3,8 @@
 #include <memory>
 #include <type_traits>
 
+#include <labs_engine/utils/types.h>
+
 namespace leng
 {
   class Scene;
@@ -12,7 +14,7 @@ namespace leng
    public:
     Object();
     virtual ~Object();
-    virtual auto tick(int const delta) -> void = 0;
+    virtual auto tick(f32 const delta) -> void = 0;
     virtual auto destroy() -> void;
     virtual auto clone(bool on_scene = false) -> std::shared_ptr<Object> = 0;
 

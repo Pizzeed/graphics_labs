@@ -23,7 +23,7 @@ namespace leng
       -> std::shared_ptr<Object> override;
 
    protected:
-    virtual auto tick(int const delta) -> void override {}
+    virtual auto tick(f32 const delta) -> void override {}
 
    private:
     auto setup_mesh() -> void;

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 message("${CMAKE_PREFIX_PATH}")
 
 if (NOT DEFINED CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 20)
+  set(CMAKE_CXX_STANDARD 23)
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
