@@ -8,6 +8,8 @@
 
 #include <particles/particle_emitter.h>
 
+class IParticleAttractor;
+
 class TetrahedronEmitter : public leng::Mesh,
                            public IParticleEmitter
 {
@@ -19,6 +21,9 @@ class TetrahedronEmitter : public leng::Mesh,
   );
 
   ~TetrahedronEmitter() override = default;
+
+  auto add_attractor(std::shared_ptr<IParticleAttractor> const& attractor)
+    -> void;
 
  protected:
   virtual auto tick(f32 const delta) -> void override;

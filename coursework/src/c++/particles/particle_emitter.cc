@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include <particles/particle_emitter.h>
 
 IParticleEmitter::IParticleEmitter(
@@ -30,17 +31,22 @@ auto IParticleEmitter::tick_particles(f32 const delta) -> void
   }
 
   for(auto& p : m_particles) {
-    // p.trail.push_back(
-    // static_pointer_cast<leng::RenderObject>(p.body->clone(true))
-    // );
+    p.trail.push_back(
+      static_pointer_cast<leng::RenderObject>(p.body->clone(true))
+    );
     p.body->set_position(p.body->transform().position + p.velocity * delta);
     p.lifetime -= delta;
-    // if(p.trail.size() > m_trail_length) {
-    //   p.trail.front()->scene()->destroy_object(
-    //     static_cast<leng::Object*>(p.trail.front().get())
-    //   );
-    //   p.trail.pop_front();
-    // }
+    if(p.lifetime <= 0) {
+      p.body->scene()->destroy_object(p.body.get());
+      for(auto const& trail : p.trail)
+        trail->scene()->destroy_object(trail.get());
+      p.trail.clear();
+      continue;
+    }
+    if(p.trail.size() > m_trail_length && p.trail.size() > 0) {
+      p.trail.front()->scene()->destroy_object(p.trail.front().get());
+      p.trail.pop_front();
+    }
   }
 
   auto it = std::remove_if(m_particles.begin(), m_particles.end(), [](auto& p) {

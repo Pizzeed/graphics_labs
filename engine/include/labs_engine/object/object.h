@@ -20,7 +20,7 @@ namespace leng
 
     auto scene() -> Scene*;
 
-   private:
+   protected:
     Scene* m_scene = nullptr;
 
     friend class Scene;

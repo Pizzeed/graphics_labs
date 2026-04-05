@@ -85,10 +85,10 @@ Sphere::Sphere(
     indices.push_back(bottom);
   }
 
-  glBindVertexArray(m_vao);
+  glBindVertexArray(m_buffer->vao);
 
-  glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+  glBindBuffer(GL_ARRAY_BUFFER, m_buffer->vbo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_buffer->ebo);
   glBufferData(
     GL_ARRAY_BUFFER,
     vertices.size() * sizeof(Vertex),
@@ -144,6 +144,8 @@ auto Sphere::clone(bool on_scene) -> std::shared_ptr<leng::Object>
   auto obj = std::make_shared<Sphere>(*this);
   if(on_scene and this->scene())
     this->scene()->add_object(obj);
+  else
+    obj->m_scene = nullptr;
 
   obj->m_model_loc = this->m_model_loc;
   obj->m_view_loc = this->m_view_loc;

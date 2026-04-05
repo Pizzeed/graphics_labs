@@ -30,10 +30,10 @@ namespace leng
 
   auto OBJMesh::setup_mesh() -> void
   {
-    glBindVertexArray(m_vao);
+    glBindVertexArray(m_buffer->vao);
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_buffer->vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_buffer->ebo);
     glBufferData(
       GL_ARRAY_BUFFER,
       m_vertices.size() * sizeof(Vertex),

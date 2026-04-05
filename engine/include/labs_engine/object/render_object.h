@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 #include <glm/vec3.hpp>
 
@@ -27,9 +28,16 @@ namespace leng
     virtual auto render(Camera const& camera) -> void = 0;
 
     Transform m_transform = {};
-    u32 m_vao = 0;
-    u32 m_vbo = 0;
-    u32 m_ebo = 0;
+
+    // this is a crutch and i should probably rethink this
+    struct GPUBuffer
+    {
+      u32 vao = 0;
+      u32 vbo = 0;
+      u32 ebo = 0;
+    };
+
+    std::shared_ptr<GPUBuffer> m_buffer = nullptr;
 
     friend void Scene::tick(f32);
   };

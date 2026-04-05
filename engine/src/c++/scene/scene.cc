@@ -23,7 +23,7 @@ namespace leng
       });
 
     m_objects.erase(removed, m_objects.end());
-    m_objects.append_range(m_added);
+    m_objects.insert(m_objects.end(), m_added.begin(), m_added.end());
 
     m_added.clear();
     m_removed.clear();
@@ -51,13 +51,19 @@ namespace leng
     if(std::find(m_objects.begin(), m_objects.end(), object) != m_objects.end())
       return;
 
-    if(std::find(m_removed.begin(), m_removed.end(), object) != m_removed.end())
+    if(
+      std::find(m_removed.begin(), m_removed.end(), object) != m_removed.end()
+    ) {
       m_removed.erase(
         std::remove(m_removed.begin(), m_removed.end(), object),
         m_removed.end()
       );
-    else
+      object->m_scene = this;
+    }
+    else {
       m_added.push_back(object);
+      object->m_scene = this;
+    }
   }
 
   auto Scene::destroy_object(Object* ptr) -> void
@@ -72,8 +78,10 @@ namespace leng
         [ptr](auto const& object) { return object.get() == ptr; }
       );
       found != m_added.end()
-    )
+    ) {
       m_added.erase(found);
+      (*found)->m_scene = nullptr;
+    }
 
     if(
       auto found = std::find_if(
@@ -94,7 +102,9 @@ namespace leng
       found == m_objects.end()
     )
       return;
-    else
+    else {
       m_removed.push_back(*found);
+      (*found)->m_scene = nullptr;
+    }
   }
 }  // namespace leng

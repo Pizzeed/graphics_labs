@@ -12,13 +12,23 @@
 #include <materials/textured_material.h>
 #include <shapes/sphere.h>
 #include <shapes/tetrahedron_emitter.h>
+#include <shapes/plane_attractor.h>
+#include "particles/particle_attractor.h"
+#include "particles/particle_emitter.h"
 
 class UI : public leng::RenderObject
 {
  public:
-  UI(std::vector<leng::Material*> materials, Sphere* light_marker)
+  UI(
+    std::vector<leng::Material*> materials,
+    Sphere* light_marker,
+    IParticleEmitter* emitter,
+    IParticleAttractor* attractor
+  )
     : m_materials(materials)
     , m_light_marker(light_marker)
+    , m_emitter(emitter)
+    , m_attractor(attractor)
   {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -59,6 +69,12 @@ class UI : public leng::RenderObject
     ImGui::SliderFloat("Light G", &light_g, 0, 1);
     ImGui::SliderFloat("Light B", &light_b, 0, 1);
     ImGui::SliderFloat("Light Intensity", &light_int, 0, 1);
+    ImGui::SliderFloat("Particle Lifetime", &lifetime, 0.1, 5);
+    ImGui::SliderFloat("Particle Interval", &interval, 0.01, .5);
+    ImGui::SliderFloat("Particle Speed", &speed, 0.1, 10);
+    ImGui::SliderInt("Particle Trail", &trail, 0, 10);
+    ImGui::SliderFloat("Attractor Force", &force, 0.1, 20);
+
     ImGui::Checkbox("Wireframe", &m_wireframe);
     ImGui::End();
     ImGui::Render();
@@ -90,6 +106,13 @@ class UI : public leng::RenderObject
       }
     }
 
+    m_emitter->with_interval(interval)
+      .with_lifetime(lifetime)
+      .with_start_speed(speed)
+      .with_trail_length(trail);
+
+    m_attractor->set_force(force);
+
     if(m_prev_wireframe != m_wireframe) {
       if(m_wireframe) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -117,8 +140,15 @@ class UI : public leng::RenderObject
   f32 light_g = 1.f;
   f32 light_b = 1.f;
   f32 light_int = .5f;
+  f32 lifetime = 4.f;
+  f32 interval = .01f;
+  f32 speed = 5.f;
+  int trail = 5;
+  f32 force = 1.f;
   std::vector<leng::Material*> m_materials;
   Sphere* m_light_marker = nullptr;
+  IParticleEmitter* m_emitter = nullptr;
+  IParticleAttractor* m_attractor = nullptr;
   bool m_wireframe = false;
   bool m_prev_wireframe = false;
 };
@@ -141,33 +171,39 @@ int main()
     std::string(CMAKE_BINARY_DIR) + "/assets/shaders/matte/vert.glsl",
     std::string(CMAKE_BINARY_DIR) + "/assets/shaders/matte/frag.glsl"
   );
+  auto black_mat = ColoredMaterial::from_files(
+    std::string(CMAKE_BINARY_DIR) + "/assets/shaders/matte/vert.glsl",
+    std::string(CMAKE_BINARY_DIR) + "/assets/shaders/matte/frag.glsl"
+  );
   auto unlit_mat = ColoredMaterial::from_files(
     std::string(CMAKE_BINARY_DIR) + "/assets/shaders/unlit/vert.glsl",
     std::string(CMAKE_BINARY_DIR) + "/assets/shaders/unlit/frag.glsl"
   );
-  unlit_mat.set_color(leng::Color("#ffffffff"));
+  unlit_mat.set_color(leng::Color("#ffffff"));
   matte_mat.set_color(leng::Color::red());
+  black_mat.set_color(leng::Color("#00000033"));
   auto light = scene->create_object<Sphere>(&unlit_mat, .2, 16, 16);
-
-  auto teapot = scene->create_object<leng::OBJMesh>(
-    std::string(CMAKE_BINARY_DIR) + "/assets/teapot.obj",
-    &matte_mat
-  );
-
-  teapot->set_position({-4.f, 0.f, 0.f});
 
   auto emitter = scene->create_object<TetrahedronEmitter>(
     &matte_mat,
-    std::make_shared<Sphere>(&matte_mat, .1f, 8, 8),
+    std::make_shared<Sphere>(&black_mat, .1f, 16, 16),
     3.0f
   );
-  auto s = std::make_shared<Sphere>(&matte_mat, .1f, 8, 8);
-  s->set_position({3.f, 0.f, 0.f});
-  scene->add_object(s);
+
+  auto plane = std::make_shared<Plane>(&matte_mat, 2.f);
+  plane->set_position({3.f, 0.f, 0.f});
+  scene->add_object(plane);
+
+  emitter->add_attractor(plane);
+
   emitter->start();
 
-  auto ui = scene->create_object<
-    UI>(std::vector<leng::Material*> {&matte_mat}, light);
+  auto ui = scene->create_object<UI>(
+    std::vector<leng::Material*> {&matte_mat, &black_mat},
+    light.get(),
+    emitter.get(),
+    plane.get()
+  );
 
   scene->current_camera().set_fov(90);
   app->run_graphics_loop();

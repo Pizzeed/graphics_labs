@@ -1,5 +1,5 @@
-#include <array>
 #include <iostream>
+#include <array>
 #include <random>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -8,6 +8,7 @@
 #include <glm/geometric.hpp>
 #include <labs_engine/glad/glad.h>
 
+#include <particles/particle_attractor.h>
 #include <shapes/tetrahedron_emitter.h>
 
 TetrahedronEmitter::TetrahedronEmitter(
@@ -64,10 +65,10 @@ TetrahedronEmitter::TetrahedronEmitter(
       out[idx++] = {m_vertices[faces[f][i]], uv[i], normal};
     }
   }
-  glBindVertexArray(m_vao);
+  glBindVertexArray(m_buffer->vao);
 
-  glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+  glBindBuffer(GL_ARRAY_BUFFER, m_buffer->vbo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_buffer->ebo);
   glBufferData(
     GL_ARRAY_BUFFER,
     out.size() * sizeof(Vertex),
@@ -130,7 +131,7 @@ auto TetrahedronEmitter::render(leng::Camera const& camera) -> void
   auto view = camera.view_matrix();
   auto proj = camera.projection_matrix();
 
-  glBindVertexArray(m_vao);
+  glBindVertexArray(m_buffer->vao);
   m_material->use();
 
   glUniformMatrix4fv(m_model_loc, 1, GL_FALSE, glm::value_ptr(model));
@@ -145,9 +146,41 @@ auto TetrahedronEmitter::tick(f32 const delta) -> void
 {
   for(auto& p : m_particles) {
     auto scale = std::
-      min(1.f, glm::distance(p.spawn_pos, p.body->transform().position));
-    p.body->set_scale({scale, scale, scale});
+      max(1.f, glm::distance(p.spawn_pos, p.body->transform().position));
+    p.body->transform().scale = glm::vec3(scale, scale, scale);
   }
+
+  for(auto const& attractor : m_attractors) {
+    glm::vec3 plane_pos = dynamic_pointer_cast<RenderObject>(attractor)
+                            ->transform()
+                            .position;
+    glm::vec3 plane_normal = glm::vec3 {0.f, 1.f, 0.f};
+
+    for(auto& p : m_particles) {
+      glm::vec3 closest = attractor->closest_point(
+        p.body->transform().position
+      );
+      glm::vec3 to_plane = p.body->transform().position - plane_pos;
+      glm::vec3 dir = closest - p.body->transform().position;
+      f32 dist = glm::length(dir);
+
+      float pull_strength = attractor->force() * delta;
+      if(dist > 0.f) {
+        p.velocity += glm::normalize(-to_plane) * pull_strength;
+      }
+      else {
+        float vn = glm::dot(p.velocity, plane_normal);
+        p.velocity -= plane_normal * vn;
+      }
+    }
+  }
+
+  for(auto& p : m_particles) {
+    p.velocity.x *= 1.0f - 0.75f * delta;
+    p.velocity.y += (m_start_speed - p.velocity.y) * 0.5f * delta;
+    p.velocity.z *= 1.0f - 0.75f * delta;
+  }
+
   tick_particles(delta);
 }
 
@@ -159,17 +192,15 @@ auto sample_triangle(
 ) -> glm::vec3
 {
   std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+  float r1 = dist(rng);
+  float r2 = dist(rng);
 
-  float u = dist(rng);
-  float v = dist(rng);
+  if(r1 + r2 > 1.0f) {
+    r1 = 1.0f - r1;
+    r2 = 1.0f - r2;
+  }
 
-  float su = std::sqrt(u);
-
-  float w1 = 1.0f - su;
-  float w2 = su * (1.0f - v);
-  float w3 = su * v;
-
-  return w1 * a + w2 * b + w3 * c;
+  return a + r1 * (b - a) + r2 * (c - a);
 }
 
 auto TetrahedronEmitter::get_random_point() -> std::pair<glm::vec3, glm::vec3>
@@ -219,15 +250,12 @@ auto TetrahedronEmitter::emit_particle() -> void
 {
   auto [pos, vel] = get_random_point();
 
-  std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
-  auto body = m_particle_template->clone(false);
-  auto particle = IParticleEmitter::Particle {
-    static_pointer_cast<RenderObject>(body),
-    vel * m_start_speed,
-    pos,
-    m_particle_lifetime,
-    {}
-  };
+  auto body = static_pointer_cast<RenderObject>(
+    m_particle_template->clone(false)
+  );
+  auto particle = IParticleEmitter::
+    Particle {body, vel * m_start_speed, pos, m_particle_lifetime, {}};
+  body->set_position(pos);
   this->scene()->add_object(body);
   m_particles.push_back(particle);
 }
@@ -243,4 +271,11 @@ auto TetrahedronEmitter::clone(bool on_scene) -> std::shared_ptr<leng::Object>
   obj->m_proj_loc = this->m_proj_loc;
 
   return obj;
+}
+
+auto TetrahedronEmitter::add_attractor(
+  std::shared_ptr<IParticleAttractor> const& attractor
+) -> void
+{
+  m_attractors.push_back(attractor);
 }

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <imgui.h>
 
 #include <labs_engine/glad/glad.h>
@@ -107,7 +109,9 @@ int main()
 
   scene->add_object(clone3);
 
-  // scene->destroy_object(clone3.get());
+  if(not clone->scene() or not clone2->scene() or not clone3->scene())
+    std::cout << "No scene in clones!" << std::endl;
+  scene->destroy_object(clone3.get());
 
   // cube->set_position({3.f, -2.f, -5.f});
 

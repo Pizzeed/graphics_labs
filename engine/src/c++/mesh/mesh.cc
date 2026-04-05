@@ -53,7 +53,7 @@ namespace leng
     auto view = camera.view_matrix();
     auto proj = camera.projection_matrix();
 
-    glBindVertexArray(m_vao);
+    glBindVertexArray(m_buffer->vao);
     m_material->use();
 
     glUniformMatrix4fv(m_model_loc, 1, GL_FALSE, glm::value_ptr(model));

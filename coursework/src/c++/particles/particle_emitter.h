@@ -7,8 +7,6 @@
 #include <labs_engine/object/object.h>
 #include <labs_engine/object/render_object.h>
 
-class IParticleAttractor;
-
 class IParticleEmitter
 {
  public:
@@ -43,7 +41,7 @@ class IParticleEmitter
   f32 m_particle_lifetime = 3;
   f32 m_interval = .5f;
   f32 m_current_interval = 0;
-  f32 m_start_speed = .1f;
+  f32 m_start_speed = 1.f;
   u32 m_trail_length = 4;
 
   bool m_running = false;

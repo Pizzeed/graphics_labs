@@ -3,22 +3,27 @@
 #include <glm/ext/vector_float3.hpp>
 #include <labs_engine/utils/types.h>
 
-namespace leng
+class IParticleAttractor
 {
-  class IParticleAttractor
-  {
-   public:
-    virtual ~IParticleAttractor() = default;
+ public:
+  IParticleAttractor(f32 force = 0.5, f32 range = 1)
+    : m_force(force)
+    , m_range(range)
+  {}
 
-    auto force() const -> f32 { return m_force; }
+  virtual ~IParticleAttractor() = default;
 
-    auto range() const -> f32 { return m_range; }
+  auto force() const -> f32 { return m_force; }
 
-    virtual auto closest_point(glm::vec3 const& to) const -> glm::vec3 = 0;
+  auto range() const -> f32 { return m_range; }
 
-   private:
-    f32 m_force = 0.5;
-    f32 m_range = 1;
-  };
+  auto set_force(f32 force) -> void { m_force = force; }
 
-}  // namespace leng
+  auto set_range(f32 range) -> void { m_range = range; }
+
+  virtual auto closest_point(glm::vec3 const& to) const -> glm::vec3 = 0;
+
+ protected:
+  f32 m_force = 0.5;
+  f32 m_range = 1;
+};

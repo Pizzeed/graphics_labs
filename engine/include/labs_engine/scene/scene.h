@@ -34,7 +34,7 @@ namespace leng
     auto destroy_object(Object* object) -> void;
 
     template <ObjectDerived T, class... Args>
-    auto create_object(Args&&... args) -> T*;
+    auto create_object(Args&&... args) -> std::shared_ptr<T>;
 
    private:
     std::vector<std::shared_ptr<Object>> m_objects = {};
@@ -50,10 +50,10 @@ namespace leng
 {
 
   template <ObjectDerived T, class... Args>
-  auto Scene::create_object(Args&&... args) -> T*
+  auto Scene::create_object(Args&&... args) -> std::shared_ptr<T>
   {
     m_objects.emplace_back(std::make_shared<T>(std::forward<Args>(args)...));
     m_objects.back()->m_scene = this;
-    return static_cast<T*>(m_objects.back().get());
+    return static_pointer_cast<T>(m_objects.back());
   }
 }  // namespace leng
