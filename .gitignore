@@ -96,4 +96,5 @@
 *cache/
 *bindings/
 *CMakeUserPresets*
+*CMakePresets*
 *compile_commands*

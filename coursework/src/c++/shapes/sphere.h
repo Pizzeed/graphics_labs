@@ -15,8 +15,11 @@ class Sphere : public leng::Mesh
   );
   virtual ~Sphere();
 
+  virtual auto clone(bool on_scene = false)
+    -> std::shared_ptr<leng::Object> override;
+
  protected:
-  virtual auto tick(int const delta) -> void override {}
+  virtual auto tick(f32 const delta) -> void override {}
 
  private:
   f32 m_radius;

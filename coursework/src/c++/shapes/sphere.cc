@@ -19,7 +19,8 @@ Sphere::Sphere(
 {
   struct Vertex
   {
-    glm::vec3 position;
+    glm::vec3 pos;
+    glm::vec2 uv;
     glm::vec3 normal;
   };
 
@@ -37,10 +38,14 @@ Sphere::Sphere(
       auto x = cos_a * layer_r;
       auto z = sin_a * layer_r;
       glm::vec3 pos = {x, y, z};
-      vertices.emplace_back(pos, pos / m_radius);
+      vertices.emplace_back(pos, glm::vec2 {}, pos / m_radius);
     }
   }
-  vertices.emplace_back(glm::vec3 {0, -m_radius, 0}, glm::vec3 {0, -1, 0});
+  vertices.emplace_back(
+    glm::vec3 {0, -m_radius, 0},
+    glm::vec2 {},
+    glm::vec3 {0, -1, 0}
+  );
 
   auto ring_vertices = m_v_segments + 1;
   auto first_ring = 1;
@@ -97,17 +102,35 @@ Sphere::Sphere(
     GL_STATIC_DRAW
   );
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
   glEnableVertexAttribArray(0);
+  glVertexAttribPointer(
+    0,
+    3,
+    GL_FLOAT,
+    GL_FALSE,
+    sizeof(Vertex),
+    (void*)offsetof(Vertex, pos)
+  );
   glVertexAttribPointer(
     1,
     3,
     GL_FLOAT,
     GL_FALSE,
     sizeof(Vertex),
-    (void*)sizeof(glm::vec3)
+    (void*)offsetof(Vertex, uv)
   );
   glEnableVertexAttribArray(1);
+
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(
+    2,
+    3,
+    GL_FLOAT,
+    GL_FALSE,
+    sizeof(Vertex),
+    (void*)offsetof(Vertex, normal)
+  );
+
   glBindVertexArray(0);
 
   m_vertex_count = vertices.size();
@@ -115,3 +138,16 @@ Sphere::Sphere(
 }
 
 Sphere::~Sphere() {}
+
+auto Sphere::clone(bool on_scene) -> std::shared_ptr<leng::Object>
+{
+  auto obj = std::make_shared<Sphere>(*this);
+  if(on_scene and this->scene())
+    this->scene()->add_object(obj);
+
+  obj->m_model_loc = this->m_model_loc;
+  obj->m_view_loc = this->m_view_loc;
+  obj->m_proj_loc = this->m_proj_loc;
+
+  return obj;
+}

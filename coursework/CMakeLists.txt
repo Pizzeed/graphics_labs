@@ -38,7 +38,9 @@ PUBLIC
 PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/materials/colored_material.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/materials/textured_material.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/particles/particle_emitter.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/shapes/sphere.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/shapes/tetrahedron_emitter.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/main.cc
   
   ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/bindings/imgui_impl_glfw.cpp
